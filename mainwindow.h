@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "endpoint.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,6 +18,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QVector<Endpoint> endpoints;
 
     void initConfig();
     void getServerInfo(QByteArray&);
