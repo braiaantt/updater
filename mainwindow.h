@@ -19,6 +19,7 @@ private:
     Ui::MainWindow *ui;
 
     void initConfig();
+    void getServerInfo(QByteArray&);
 
 };
 #endif // MAINWINDOW_H
