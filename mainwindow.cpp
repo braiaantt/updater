@@ -36,3 +36,52 @@ void MainWindow::initConfig(){
     getServerInfo(fileBytes);
 
 }
+
+void MainWindow::getServerInfo(QByteArray &fileBytes){
+
+    QJsonParseError parseError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(fileBytes, &parseError);
+
+    if (parseError.error != QJsonParseError::NoError) {
+        qDebug() << "Error al leer el archivo JSON:" << parseError.errorString();
+        return;
+    }
+
+    if(!jsonDoc.isObject()){
+        qDebug()<<"Formato del archivo de configuración incorrecto";
+        return;
+    }
+
+    QJsonObject jsonObj = jsonDoc.object();
+
+    hostName = jsonObj["hostName"].toString();
+
+    if(jsonObj["endpoints"].isArray()){
+        QJsonArray array = jsonObj["endpoints"].toArray();
+
+        for(const QJsonValue &arrayValue : array){
+
+            const QJsonObject &arrayObject = arrayValue.toObject();
+
+            QString route = arrayObject["route"].toString();
+            QString method = arrayObject["method"].toString();
+
+            Endpoint endpoint(route, method);
+            endpoints << endpoint;
+
+        }
+
+    } else {
+
+        QJsonObject endpointObj = jsonObj["endpoints"].toObject();
+
+        QString route = endpointObj["route"].toString();
+        QString method = endpointObj["method"].toString();
+
+        Endpoint endpoint(route, method);
+        endpoints << endpoint;
+
+    }
+
+}
+
