@@ -19,6 +19,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QVector<Endpoint> endpoints;
+    QString hostName;
 
     void initConfig();
     void getServerInfo(QByteArray&);
