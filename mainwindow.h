@@ -22,7 +22,8 @@ private:
     QString hostName;
 
     void initConfig();
-    void getServerInfo(QByteArray&);
+    void getConfigJsonInfo(QByteArray&);
+    void execRequests();
 
 };
 #endif // MAINWINDOW_H

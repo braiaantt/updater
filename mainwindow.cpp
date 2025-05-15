@@ -33,11 +33,11 @@ void MainWindow::initConfig(){
         return;
     }
 
-    getServerInfo(fileBytes);
+    getConfigJsonInfo(fileBytes);
 
 }
 
-void MainWindow::getServerInfo(QByteArray &fileBytes){
+void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
 
     QJsonParseError parseError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(fileBytes, &parseError);
@@ -84,4 +84,5 @@ void MainWindow::getServerInfo(QByteArray &fileBytes){
     }
 
 }
+
 
