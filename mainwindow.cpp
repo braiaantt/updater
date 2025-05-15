@@ -57,6 +57,9 @@ void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
     //get hostName
     hostName = jsonObj["hostName"].toString();
 
+    //get main app name
+    mainAppName = jsonObj["mainAppName"].toString();
+
     //get endpoints
     if(jsonObj["endpoints"].isArray()){
         QJsonArray array = jsonObj["endpoints"].toArray();
@@ -84,8 +87,6 @@ void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
         endpoints << endpoint;
 
     }
-
-    //get main app name
 
 }
 

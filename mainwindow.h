@@ -20,6 +20,7 @@ private:
     Ui::MainWindow *ui;
     QVector<Endpoint> endpoints;
     QString hostName;
+    QString mainAppVersion;
 
     void initConfig();
     void getConfigJsonInfo(QByteArray&);
