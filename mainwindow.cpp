@@ -60,7 +60,7 @@ void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
     //get hostName
     hostName = jsonObj["hostName"].toString();
 
-    //get main app name
+    //get main app version
     mainAppVersion = jsonObj["mainAppVersion"].toString();
 
     //get endpoints
@@ -130,7 +130,7 @@ void MainWindow::latestAppVersionRequestFinished(){
         QString latestVersion = jsonObj["data"].toString();
 
         if(isUpdateRequired(latestVersion)){
-            downloadNewUpdate();
+            downloadNewUpdate(latestVersion);
         }
 
     }
@@ -147,5 +147,68 @@ bool MainWindow::isUpdateRequired(QString &strLatestVersion){
     if(latestVersion > currentVersion) return true;
 
     return false;
+
+}
+
+void MainWindow::downloadNewUpdate(QString &latestVersion){
+
+    Endpoint &endpoint = endpoints[1];
+    QUrl url(hostName + endpoint.getRoute() + "/" + latestVersion);
+    QNetworkRequest request(url);
+    QNetworkReply *reply = nullptr;
+
+    if(endpoint.getMethod() == "GET"){
+        reply = manager->get(request);
+    }
+
+    if(reply){
+        connect(reply, &QNetworkReply::finished, this, &MainWindow::downloadNewUpdateRequestFinished);
+    } else {
+        qDebug()<<"No se ha podido realizar la solicitud";
+    }
+
+}
+
+void MainWindow::downloadNewUpdateRequestFinished(){
+
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+
+    if(reply->error() != QNetworkReply::NoError){
+        qDebug()<<"Hubo un error en la respuesta de la descarga";
+        return;
+    }
+
+    QVariant header = reply->header(QNetworkRequest::ContentDispositionHeader);
+
+    if(header.isValid()){
+
+        QString contentDisposition = header.toString();
+
+        if(contentDisposition.isEmpty()){
+            qDebug()<<"El nombre del archivo no es valido!";
+            return;
+        }
+
+        static QRegularExpression regex(R"regex(filename="?([^";]+)"?)regex");
+        QRegularExpressionMatch match = regex.match(contentDisposition);
+
+        if (match.hasMatch()) {
+            QString fileName = match.captured(1);
+
+            if(fileName.endsWith(".exe")){
+
+                //saveExe
+
+            } else if(fileName.endsWith(".zip")){
+
+                //saveZip
+
+            } else {
+                qDebug()<<"extension de archivo no valida!";
+            }
+
+        }
+
+    }
 
 }
