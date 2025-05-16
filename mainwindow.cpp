@@ -4,6 +4,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QUrl>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -90,4 +93,48 @@ void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
 
 }
 
+void MainWindow::getLatestAppVersion(){
 
+    Endpoint &endpoint = endpoints[0];
+    QUrl url(hostName + endpoint.getRoute());
+    QNetworkRequest request(url);
+    QNetworkReply *reply = nullptr;
+
+    if(endpoint.getMethod() == "GET"){
+        reply = manager->get(request);
+    }
+
+    if(reply){
+        connect(reply, &QNetworkReply::finished, this, &MainWindow::latestAppVersionRequestFinished);
+    } else {
+        qDebug()<<"No se ha podido realizar la solicitud";
+    }
+
+}
+
+void MainWindow::latestAppVersionRequestFinished(){
+
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+
+    if(reply->error() != QNetworkReply::NoError){
+        qDebug()<<"Hubo un error en la respuesta";
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray response = reply->readAll();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(response);
+
+    if(jsonDoc.isObject()){
+        QJsonObject jsonObj = jsonDoc.object();
+        QString latestVersion = jsonObj["data"].toString();
+
+        if(isUpdateRequired()){
+            downloadNewUpdate();
+        }
+
+    }
+
+    reply->deleteLater();
+
+}
