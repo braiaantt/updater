@@ -7,8 +7,8 @@ class Endpoint
 public:
     Endpoint(const QString&, const QString&);
     //getters
-    const QString &getRoute();
-    const QString &getMethod();
+    const QString &getRoute() const;
+    const QString &getMethod() const;
 
     //setters
     void setRoute(const QString &);

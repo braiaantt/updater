@@ -14,10 +14,10 @@ void Endpoint::setRoute(const QString &_route){
     route = _route;
 }
 
-const QString &Endpoint::getMethod(){
+const QString &Endpoint::getMethod() const{
     return method;
 }
 
-const QString &Endpoint::getRoute(){
+const QString &Endpoint::getRoute() const{
     return route;
 }
