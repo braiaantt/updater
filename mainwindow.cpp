@@ -7,6 +7,7 @@
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 #include <QUrl>
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -194,10 +195,11 @@ void MainWindow::downloadNewUpdateRequestFinished(){
 
         if (match.hasMatch()) {
             QString fileName = match.captured(1);
+            QByteArray fileBytes = reply->readAll();
 
             if(fileName.endsWith(".exe")){
 
-                //saveExe
+                saveExe(fileName, fileBytes);
 
             } else if(fileName.endsWith(".zip")){
 
@@ -209,6 +211,29 @@ void MainWindow::downloadNewUpdateRequestFinished(){
 
         }
 
+    }
+
+}
+
+void MainWindow::saveExe(QString& fileName, QByteArray& fileBytes){
+
+    QString updaterPath = QCoreApplication::applicationDirPath();
+    QString exePath = updaterPath + "/" + fileName;
+    QFile exeFile(exePath);
+
+    if (exeFile.exists()) {
+        if (!exeFile.remove()) {
+            qDebug() << "No se pudo eliminar el archivo existente:" << exePath;
+            return;
+        }
+    }
+
+    if (exeFile.open(QFile::WriteOnly | QFile::Truncate)) {
+        exeFile.write(fileBytes);
+        exeFile.close();
+        qDebug() << "Archivo .exe guardado en:" << exePath;
+    } else {
+        qDebug() << "No se pudo abrir el archivo para escribir:" << exePath;
     }
 
 }
