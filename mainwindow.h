@@ -19,6 +19,7 @@ public:
 
 public slots:
     void latestAppVersionRequestFinished();
+    void downloadNewUpdateRequestFinished();
 
 private:
     Ui::MainWindow *ui;
@@ -31,7 +32,7 @@ private:
     void getConfigJsonInfo(QByteArray&);
     void getLatestAppVersion();
     bool isUpdateRequired(QString&);
-    void downloadNewUpdate();
+    void downloadNewUpdate(QString&);
 
 };
 #endif // MAINWINDOW_H
