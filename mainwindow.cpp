@@ -129,12 +129,23 @@ void MainWindow::latestAppVersionRequestFinished(){
         QJsonObject jsonObj = jsonDoc.object();
         QString latestVersion = jsonObj["data"].toString();
 
-        if(isUpdateRequired()){
+        if(isUpdateRequired(latestVersion)){
             downloadNewUpdate();
         }
 
     }
 
     reply->deleteLater();
+
+}
+
+bool MainWindow::isUpdateRequired(QString &strLatestVersion){
+
+    double latestVersion = strLatestVersion.toDouble();
+    double currentVersion = mainAppVersion.toDouble();
+
+    if(latestVersion > currentVersion) return true;
+
+    return false;
 
 }
