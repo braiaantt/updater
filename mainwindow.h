@@ -34,6 +34,7 @@ private:
     bool isUpdateRequired(QString&);
     void downloadNewUpdate(QString&);
     void saveExe(QString&, QByteArray&);
+    void saveZip(QString&, QByteArray&);
 
 };
 #endif // MAINWINDOW_H
