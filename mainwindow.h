@@ -30,6 +30,8 @@ private:
     void initConfig();
     void getConfigJsonInfo(QByteArray&);
     void getLatestAppVersion();
+    bool isUpdateRequired();
+    void downloadNewUpdate();
 
 };
 #endif // MAINWINDOW_H
