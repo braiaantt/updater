@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "endpoint.h"
+#include <QtNetwork/QNetworkAccessManager>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,15 +17,19 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void latestAppVersionRequestFinished();
+
 private:
     Ui::MainWindow *ui;
     QVector<Endpoint> endpoints;
     QString hostName;
     QString mainAppVersion;
+    QNetworkAccessManager *manager;
 
     void initConfig();
     void getConfigJsonInfo(QByteArray&);
-    void execRequests();
+    void getLatestAppVersion();
 
 };
 #endif // MAINWINDOW_H
