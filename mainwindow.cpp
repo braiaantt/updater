@@ -8,6 +8,7 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QUrl>
 #include <QDir>
+#include <QProcess>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -235,5 +236,47 @@ void MainWindow::saveExe(QString& fileName, QByteArray& fileBytes){
     } else {
         qDebug() << "No se pudo abrir el archivo para escribir:" << exePath;
     }
+
+}
+
+void MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
+
+    QString appPath = QCoreApplication::applicationDirPath();
+    QString tempFolderPath = appPath + "/tempUpdate";
+    QDir tempFolder;
+
+    if(!tempFolder.exists(tempFolderPath)){
+        if(!tempFolder.mkpath(tempFolderPath)){
+            qDebug()<<"carpeta temporal creada con exito!";
+        } else {
+            qDebug()<<"error al crear la carpeta temporal!";
+        }
+    } else {
+        qDebug()<<"la carpeta temporal ya existe!";
+    }
+
+    QFile zipFile(tempFolderPath + "/" + fileName);
+    if(zipFile.open(QFile::WriteOnly)){
+
+        zipFile.write(fileBytes);
+        zipFile.close();
+
+    } else {
+        qDebug()<<"Error al crear o abrir el zipFile";
+    }
+
+    QStringList command = QStringList()
+                          << "Expand-Archive"
+                          << "-Path" << "\"" + appPath + "/" + fileName + "\""
+                          << "-DestinationPath" << "\"" + tempFolderPath + "\"";
+
+    int exitCode = QProcess::execute("powershell", command);
+
+    if (exitCode == 0) {
+        qDebug() << "Descompresión exitosa!";
+    } else {
+        qDebug()<< "Error al descomprimir el archivo";
+    }
+
 
 }
