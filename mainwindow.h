@@ -30,7 +30,7 @@ private:
     void initConfig();
     void getConfigJsonInfo(QByteArray&);
     void getLatestAppVersion();
-    bool isUpdateRequired();
+    bool isUpdateRequired(QString&);
     void downloadNewUpdate();
 
 };
