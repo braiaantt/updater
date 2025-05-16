@@ -33,6 +33,7 @@ private:
     void getLatestAppVersion();
     bool isUpdateRequired(QString&);
     void downloadNewUpdate(QString&);
+    void saveExe(QString&, QByteArray&);
 
 };
 #endif // MAINWINDOW_H
