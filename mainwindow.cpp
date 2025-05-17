@@ -9,12 +9,21 @@
 #include <QUrl>
 #include <QDir>
 #include <QProcess>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    manager = new QNetworkAccessManager(this);
+
+    QTimer::singleShot(0, this, [this]{
+        initConfig();
+        getLatestAppVersion();
+    });
+
 }
 
 MainWindow::~MainWindow()
@@ -25,7 +34,7 @@ MainWindow::~MainWindow()
 void MainWindow::initConfig(){
 
     QString appPath = QCoreApplication::applicationDirPath();
-    QFile file(appPath + "updater-config.json");
+    QFile file(appPath + "/updater-config.json");
     QByteArray fileBytes;
 
     if(file.open(QFile::ReadOnly)){
@@ -39,7 +48,6 @@ void MainWindow::initConfig(){
     }
 
     getConfigJsonInfo(fileBytes);
-
 }
 
 void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
@@ -93,6 +101,15 @@ void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
 
     }
 
+    qDebug()<<"----configuracion hecha correctamente----";
+    qDebug()<<"hostName: "<<hostName;
+    qDebug()<<"mainAppVersion: "<<mainAppVersion;
+    qDebug()<<"endpoints: ";
+    for(const Endpoint &endpoint : endpoints){
+        qDebug()<<"route: "<<endpoint.getRoute();
+        qDebug()<<"method: "<<endpoint.getMethod();
+    }
+
 }
 
 void MainWindow::getLatestAppVersion(){
@@ -107,6 +124,7 @@ void MainWindow::getLatestAppVersion(){
     }
 
     if(reply){
+        qDebug()<<"Solicitando ultima version de la aplicación...";
         connect(reply, &QNetworkReply::finished, this, &MainWindow::latestAppVersionRequestFinished);
     } else {
         qDebug()<<"No se ha podido realizar la solicitud";
@@ -124,6 +142,8 @@ void MainWindow::latestAppVersionRequestFinished(){
         return;
     }
 
+    qDebug()<<"Procesando respuesta...";
+
     QByteArray response = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(response);
 
@@ -132,7 +152,10 @@ void MainWindow::latestAppVersionRequestFinished(){
         QString latestVersion = jsonObj["data"].toString();
 
         if(isUpdateRequired(latestVersion)){
+            qDebug()<<"descargando nueva version...";
             downloadNewUpdate(latestVersion);
+        } else{
+            qDebug()<<"no hay descarga requerida!";
         }
 
     }
@@ -164,6 +187,7 @@ void MainWindow::downloadNewUpdate(QString &latestVersion){
     }
 
     if(reply){
+        qDebug()<<"realizando descarga de la nueva version... ("<<latestVersion<<")";
         connect(reply, &QNetworkReply::finished, this, &MainWindow::downloadNewUpdateRequestFinished);
     } else {
         qDebug()<<"No se ha podido realizar la solicitud";
@@ -179,6 +203,8 @@ void MainWindow::downloadNewUpdateRequestFinished(){
         qDebug()<<"Hubo un error en la respuesta de la descarga";
         return;
     }
+
+    qDebug()<<"procesando respuesta...";
 
     QVariant header = reply->header(QNetworkRequest::ContentDispositionHeader);
 
@@ -204,7 +230,7 @@ void MainWindow::downloadNewUpdateRequestFinished(){
 
             } else if(fileName.endsWith(".zip")){
 
-                //saveZip
+                saveZip(fileName, fileBytes);
 
             } else {
                 qDebug()<<"extension de archivo no valida!";
@@ -212,6 +238,8 @@ void MainWindow::downloadNewUpdateRequestFinished(){
 
         }
 
+    } else {
+        qDebug()<<"Header no valido!";
     }
 
 }
