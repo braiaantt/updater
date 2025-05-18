@@ -101,15 +101,6 @@ void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
 
     }
 
-    qDebug()<<"----configuracion hecha correctamente----";
-    qDebug()<<"hostName: "<<hostName;
-    qDebug()<<"mainAppVersion: "<<mainAppVersion;
-    qDebug()<<"endpoints: ";
-    for(const Endpoint &endpoint : endpoints){
-        qDebug()<<"route: "<<endpoint.getRoute();
-        qDebug()<<"method: "<<endpoint.getMethod();
-    }
-
 }
 
 void MainWindow::getLatestAppVersion(){
@@ -274,10 +265,11 @@ void MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
     QDir tempFolder;
 
     if(!tempFolder.exists(tempFolderPath)){
-        if(!tempFolder.mkpath(tempFolderPath)){
+        if(tempFolder.mkpath(tempFolderPath)){
             qDebug()<<"carpeta temporal creada con exito!";
         } else {
             qDebug()<<"error al crear la carpeta temporal!";
+            return;
         }
     } else {
         qDebug()<<"la carpeta temporal ya existe!";
@@ -295,7 +287,7 @@ void MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
 
     QStringList command = QStringList()
                           << "Expand-Archive"
-                          << "-Path" << "\"" + appPath + "/" + fileName + "\""
+                          << "-Path" << "\"" + tempFolderPath + "/" + fileName + "\""
                           << "-DestinationPath" << "\"" + tempFolderPath + "\"";
 
     int exitCode = QProcess::execute("powershell", command);
@@ -305,6 +297,5 @@ void MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
     } else {
         qDebug()<< "Error al descomprimir el archivo";
     }
-
 
 }
