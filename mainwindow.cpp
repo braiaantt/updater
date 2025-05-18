@@ -235,16 +235,16 @@ void MainWindow::downloadNewUpdateRequestFinished(){
 
 }
 
-void MainWindow::saveExe(QString& fileName, QByteArray& fileBytes){
+bool MainWindow::saveExe(QString& fileName, QByteArray& fileBytes){
 
     QString updaterPath = QCoreApplication::applicationDirPath();
     QString exePath = updaterPath + "/" + fileName;
     QFile exeFile(exePath);
 
-    if (exeFile.exists()) {
+    if(exeFile.exists()) {
         if (!exeFile.remove()) {
             qDebug() << "No se pudo eliminar el archivo existente:" << exePath;
-            return;
+            return false;
         }
     }
 
@@ -254,11 +254,14 @@ void MainWindow::saveExe(QString& fileName, QByteArray& fileBytes){
         qDebug() << "Archivo .exe guardado en:" << exePath;
     } else {
         qDebug() << "No se pudo abrir el archivo para escribir:" << exePath;
+        return false;
     }
+
+    return true;
 
 }
 
-void MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
+bool MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
 
     QString appPath = QCoreApplication::applicationDirPath();
     QString tempFolderPath = appPath + "/tempUpdate";
@@ -269,7 +272,7 @@ void MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
             qDebug()<<"carpeta temporal creada con exito!";
         } else {
             qDebug()<<"error al crear la carpeta temporal!";
-            return;
+            return false;
         }
     } else {
         qDebug()<<"la carpeta temporal ya existe!";
@@ -296,6 +299,9 @@ void MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
         qDebug() << "Descompresión exitosa!";
     } else {
         qDebug()<< "Error al descomprimir el archivo";
+        return false;
     }
+
+    return true;
 
 }
