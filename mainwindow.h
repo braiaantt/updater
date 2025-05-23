@@ -26,6 +26,7 @@ private:
     QVector<Endpoint> endpoints;
     QString hostName;
     QString mainAppVersion;
+    QString latestVersion;
     QNetworkAccessManager *manager;
 
     void initConfig();
@@ -35,7 +36,7 @@ private:
     void downloadNewUpdate(QString&);
     bool saveExe(QString&, QByteArray&);
     bool saveZip(QString&, QByteArray&);
-    void saveFilesZip();
+    void updateLocalVersion();
 
 };
 #endif // MAINWINDOW_H
