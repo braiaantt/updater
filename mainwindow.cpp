@@ -140,7 +140,7 @@ void MainWindow::latestAppVersionRequestFinished(){
 
     if(jsonDoc.isObject()){
         QJsonObject jsonObj = jsonDoc.object();
-        QString latestVersion = jsonObj["data"].toString();
+        latestVersion = jsonObj["data"].toString();
 
         if(isUpdateRequired(latestVersion)){
             qDebug()<<"descargando nueva version...";
@@ -217,11 +217,11 @@ void MainWindow::downloadNewUpdateRequestFinished(){
 
             if(fileName.endsWith(".exe")){
 
-                saveExe(fileName, fileBytes);
+                if(saveExe(fileName, fileBytes)) updateLocalVersion();
 
             } else if(fileName.endsWith(".zip")){
 
-                saveZip(fileName, fileBytes);
+                if(saveZip(fileName, fileBytes)) updateLocalVersion();
 
             } else {
                 qDebug()<<"extension de archivo no valida!";
@@ -303,5 +303,45 @@ bool MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
     }
 
     return true;
+
+}
+
+void MainWindow::updateLocalVersion(){
+
+    QString updaterPath = QCoreApplication::applicationDirPath();
+    QFile updaterConfig(updaterPath + "/updater-config.json");
+    QByteArray fileBytes;
+    QJsonDocument jsonDoc;
+    QJsonObject jsonObj;
+
+    if(!updaterConfig.open(QIODevice::ReadOnly)){
+        qDebug()<<"Error al intentar leer el archivo de configuración. Actualizacion de nueva version incompleta.";
+        return;
+    }
+
+    fileBytes = updaterConfig.readAll();
+    updaterConfig.close();
+
+    jsonDoc = QJsonDocument::fromJson(fileBytes);
+
+    if(!jsonDoc.isObject()){
+        qDebug()<<"Archivo de configuración con formato incorrecto.";
+        return;
+    }
+
+    jsonObj = jsonDoc.object();
+    jsonObj["mainAppVersion"] = latestVersion;
+
+    jsonDoc.setObject(jsonObj);
+
+    if(!updaterConfig.open(QIODevice::WriteOnly | QIODevice::Truncate)){
+        qDebug()<<"Error al abrir el archivo para reescritura";
+        return;
+    }
+
+    updaterConfig.write(jsonDoc.toJson(QJsonDocument::Indented));
+    updaterConfig.close();
+
+    qDebug()<<"Archivo de configuración actualizado correctamente!";
 
 }
