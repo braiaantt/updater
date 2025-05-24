@@ -20,10 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
     manager = new QNetworkAccessManager(this);
 
     QTimer::singleShot(0, this, [this]{
-        //initConfig();
-        //getLatestAppVersion();
-        applyUpdateFiles();
-        deleteTempUpdateFolder();
+        initConfig();
+        getLatestAppVersion();
     });
 
 }
@@ -441,6 +439,5 @@ void MainWindow::deleteTempUpdateFolder(){
         qDebug()<<"El directorio: "<<tempUpdateFolderDir.absolutePath()<< " no existe!"
                                                                                "";
     }
-
 
 }
