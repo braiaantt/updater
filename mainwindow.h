@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "endpoint.h"
 #include <QtNetwork/QNetworkAccessManager>
+#include <QFileInfo>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -36,6 +37,10 @@ private:
     void downloadNewUpdate(QString&);
     bool saveExe(QString&, QByteArray&);
     bool saveZip(QString&, QByteArray&);
+    void applyUpdateFiles();
+    bool searchFile(QString, const QFileInfo&) const;
+    void copyFile(const QString&, const QString&) const;
+
     void updateLocalVersion();
 
 };
