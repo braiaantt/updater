@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
         //initConfig();
         //getLatestAppVersion();
         applyUpdateFiles();
+        deleteTempUpdateFolder();
     });
 
 }
@@ -297,8 +298,9 @@ bool MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
     int exitCode = QProcess::execute("powershell", command);
 
     if (exitCode == 0) {
-        qDebug() << "Descompresión exitosa!";
+        qDebug() << "Descompresión exitosa! Copiando archivos";
         applyUpdateFiles();
+        deleteTempUpdateFolder();
 
     } else {
         qDebug()<< "Error al descomprimir el archivo";
@@ -423,5 +425,22 @@ void MainWindow::updateLocalVersion(){
     updaterConfig.close();
 
     qDebug()<<"Archivo de configuración actualizado correctamente!";
+
+}
+
+void MainWindow::deleteTempUpdateFolder(){
+
+    QDir tempUpdateFolderDir(QDir(QCoreApplication::applicationDirPath()).filePath("tempUpdate"));
+    if(tempUpdateFolderDir.exists()){
+        if(!tempUpdateFolderDir.removeRecursively()){
+            qDebug()<<"Error al eliminar la carpeta tempUpdate!";
+        } else {
+            qDebug()<<"Carpeta tempUpdate eliminada correctamente! ";
+        }
+    } else {
+        qDebug()<<"El directorio: "<<tempUpdateFolderDir.absolutePath()<< " no existe!"
+                                                                               "";
+    }
+
 
 }
