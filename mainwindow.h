@@ -40,6 +40,7 @@ private:
     void applyUpdateFiles();
     bool searchFile(QString, const QFileInfo&) const;
     void copyFile(const QString&, const QString&) const;
+    void deleteTempUpdateFolder();
 
     void updateLocalVersion();
 
