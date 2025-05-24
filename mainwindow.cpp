@@ -20,8 +20,9 @@ MainWindow::MainWindow(QWidget *parent)
     manager = new QNetworkAccessManager(this);
 
     QTimer::singleShot(0, this, [this]{
-        initConfig();
-        getLatestAppVersion();
+        //initConfig();
+        //getLatestAppVersion();
+        applyUpdateFiles();
     });
 
 }
@@ -297,12 +298,89 @@ bool MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
 
     if (exitCode == 0) {
         qDebug() << "Descompresión exitosa!";
+        applyUpdateFiles();
+
     } else {
         qDebug()<< "Error al descomprimir el archivo";
         return false;
     }
 
     return true;
+
+}
+
+void MainWindow::applyUpdateFiles(){
+
+    QDir updaterDir(QCoreApplication::applicationDirPath());
+    QDir tempUpdateDir(updaterDir.filePath("tempUpdate"));
+    QFileInfoList entries;
+
+    if(!tempUpdateDir.exists()){
+        qDebug()<<"El path: "<<tempUpdateDir.path()<<" no existe!";
+        return;
+    }
+
+    tempUpdateDir.setFilter(QDir::NoDotAndDotDot | QDir::AllEntries);
+    entries = tempUpdateDir.entryInfoList();
+
+    for(const QFileInfo& entry : entries){
+
+        if(!searchFile(updaterDir.path(), entry)){
+            qDebug()<<"Creando archivo: "<<entry.fileName();
+            copyFile(entry.absoluteFilePath(), updaterDir.filePath(entry.fileName()));
+        }
+
+    }
+
+    qDebug()<<"Reemplazo de archivos finalizado!";
+
+}
+
+bool MainWindow::searchFile(QString path, const QFileInfo& fileSearched) const{
+
+    QFileInfoList entries;
+    QDir dir(path);
+
+    dir.setFilter(QDir::NoDotAndDotDot | QDir::AllEntries);
+    entries = dir.entryInfoList();
+
+    for(const QFileInfo &entry : entries){
+
+        QString name = entry.fileName();
+
+        if(name != "tempUpdate"){
+            if(entry.isDir()){
+
+                if(searchFile(dir.filePath(name), fileSearched)) return true;
+
+            } else if(entry.isFile()){
+
+                if(name == fileSearched.fileName()){
+                    copyFile(fileSearched.absoluteFilePath(),entry.absoluteFilePath());
+                    return true;
+                }
+            }
+        }
+
+    }
+
+    return false;
+
+}
+
+void MainWindow::copyFile(const QString& source, const QString& target) const{
+
+    QFile targetFile(target);
+
+    if(targetFile.exists() && !targetFile.remove()){
+        qDebug()<<"Hubo un error al eliminar el archivo: "<<target;
+    }
+
+    if(!QFile::copy(source, target)){
+        qDebug()<<"Error al copiar el archivo: "<<source;
+    } else {
+        qDebug()<<"Archivo: "<<source<<" copiado correctamente!";
+    }
 
 }
 
