@@ -325,9 +325,11 @@ void MainWindow::applyUpdateFiles(){
 
     for(const QFileInfo& entry : entries){
 
-        if(!searchFile(updaterDir.path(), entry)){
-            qDebug()<<"Creando archivo: "<<entry.fileName();
-            copyFile(entry.absoluteFilePath(), updaterDir.filePath(entry.fileName()));
+        if(!entry.fileName().endsWith("zip")){
+            if(!searchFile(updaterDir.path(), entry)){
+                qDebug()<<"Creando archivo: "<<entry.fileName();
+                copyFile(entry.absoluteFilePath(), updaterDir.filePath(entry.fileName()));
+            }
         }
 
     }
