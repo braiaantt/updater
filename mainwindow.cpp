@@ -436,8 +436,7 @@ void MainWindow::deleteTempUpdateFolder(){
             qDebug()<<"Carpeta tempUpdate eliminada correctamente! ";
         }
     } else {
-        qDebug()<<"El directorio: "<<tempUpdateFolderDir.absolutePath()<< " no existe!"
-                                                                               "";
+        qDebug()<<"El directorio: "<<tempUpdateFolderDir.absolutePath()<< " no existe!";
     }
 
 }
