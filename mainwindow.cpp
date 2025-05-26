@@ -18,10 +18,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     manager = new QNetworkAccessManager(this);
+    scene = new QGraphicsScene(this);
+    rotationTimer = new QTimer(this);
+    spinner = new LoadingItem();
 
     QTimer::singleShot(0, this, [this]{
         initConfig();
         getLatestAppVersion();
+        initLoadingItem();
     });
 
 }
@@ -438,5 +442,23 @@ void MainWindow::deleteTempUpdateFolder(){
     } else {
         qDebug()<<"El directorio: "<<tempUpdateFolderDir.absolutePath()<< " no existe!";
     }
+
+}
+
+void MainWindow::initLoadingItem(){
+
+
+    ui->graphicsView->setScene(scene);
+    scene->addItem(spinner);
+
+    spinner->setPos(0,0);
+    scene->setSceneRect(-50, -50, 100, 100);
+    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+
+    connect(rotationTimer, &QTimer::timeout, this ,[=](){
+        spinner->setRotation(spinner->rotation()+5);
+    });
+
+    rotationTimer->start(30);
 
 }
