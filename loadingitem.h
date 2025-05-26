@@ -4,7 +4,7 @@
 #include <QGraphicsItem>
 #include <QPainter>
 
-class LoadingItem : QGraphicsItem
+class LoadingItem : public QGraphicsItem
 {
 public:
     LoadingItem();
