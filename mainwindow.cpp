@@ -260,7 +260,7 @@ bool MainWindow::saveExe(QString& fileName, QByteArray& fileBytes){
     if (exeFile.open(QFile::WriteOnly | QFile::Truncate)) {
         exeFile.write(fileBytes);
         exeFile.close();
-        ui->label->setText("Archivo guardado correctamente.");
+        ui->label->setText("Actualización finalizada correctamente!.");
     } else {
         ui->label->setText("Error al intentar escribir el archivo: " + fileName);
         return false;
@@ -300,10 +300,10 @@ bool MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
     int exitCode = QProcess::execute("powershell", command);
 
     if (exitCode == 0) {
-        ui->label->setText("Descompresion exitosa! Copiando archivos!");
+        ui->label->setText("Descompresion exitosa! Copiando archivos...!");
         applyUpdateFiles();
         deleteTempUpdateFolder();
-
+        ui->label->setText("Actualización finalizada correctamente!.");
     } else {
         ui->label->setText("Error al descomprimir el archivo de actualización!");
         return false;
@@ -331,14 +331,11 @@ void MainWindow::applyUpdateFiles(){
 
         if(!entry.fileName().endsWith("zip")){
             if(!searchFile(updaterDir.path(), entry)){
-                ui->label->setText("Creando archivo: " + entry.fileName());
                 copyFile(entry.absoluteFilePath(), updaterDir.filePath(entry.fileName()));
             }
         }
 
     }
-
-    ui->label->setText("Instalación de archivos finalizada!");
 
 }
 
@@ -385,8 +382,6 @@ void MainWindow::copyFile(const QString& source, const QString& target) const{
 
     if(!QFile::copy(source, target)){
         ui->label->setText("Error al copiar el archivo" + source);
-    } else {
-        ui->label->setText("Archivo: " + source + "copiado correctamente");
     }
 
 }
@@ -428,8 +423,6 @@ void MainWindow::updateLocalVersion(){
     updaterConfig.write(jsonDoc.toJson(QJsonDocument::Indented));
     updaterConfig.close();
 
-    ui->label->setText("Archivo de configuración actualizado correctamente!");
-
 }
 
 void MainWindow::deleteTempUpdateFolder(){
@@ -438,11 +431,7 @@ void MainWindow::deleteTempUpdateFolder(){
     if(tempUpdateFolderDir.exists()){
         if(!tempUpdateFolderDir.removeRecursively()){
             ui->label->setText("Error al eliminar la carpeta temporal!");
-        } else {
-            ui->label->setText("Carpeta temporal eliminada correctamente!");
         }
-    } else {
-        ui->label->setText("No se encontró la carpeta temporal!");
     }
 
 }
