@@ -67,40 +67,92 @@
 background-color: #282828;
 }</string>
       </property>
-      <widget class="QLabel" name="label">
-       <property name="geometry">
-        <rect>
-         <x>60</x>
-         <y>300</y>
-         <width>225</width>
-         <height>26</height>
-        </rect>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>0</number>
        </property>
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-        </font>
+       <property name="leftMargin">
+        <number>0</number>
        </property>
-       <property name="styleSheet">
-        <string notr="true">#label{
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QWidget" name="widget_2" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>4</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QGraphicsView" name="graphicsView">
+            <property name="styleSheet">
+             <string notr="true">#graphicsView{
+background-color: #282828;
+border: none;
+}</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget_3" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">#label{
 color:white;
 }</string>
-       </property>
-       <property name="text">
-        <string>Buscando actualizaciones...</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton">
-       <property name="geometry">
-        <rect>
-         <x>120</x>
-         <y>360</y>
-         <width>80</width>
-         <height>24</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#pushButton{
+            </property>
+            <property name="text">
+             <string>Buscando actualizaciones...</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget_4" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item alignment="Qt::AlignHCenter">
+           <widget class="QPushButton" name="pushButton">
+            <property name="styleSheet">
+             <string notr="true">#pushButton{
 background-color: #00000000;
 color: white;
 }
@@ -108,27 +160,16 @@ color: white;
 #pushButton::hover{
 text-decoration: underline;
 }</string>
-       </property>
-       <property name="text">
-        <string>Cancelar</string>
-       </property>
-      </widget>
-      <widget class="QGraphicsView" name="graphicsView">
-       <property name="geometry">
-        <rect>
-         <x>40</x>
-         <y>60</y>
-         <width>256</width>
-         <height>192</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">#graphicsView{
-background-color: #282828;
-border: none;
-}</string>
-       </property>
-      </widget>
+            </property>
+            <property name="text">
+             <string>Cancelar</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
