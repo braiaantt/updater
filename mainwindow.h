@@ -5,6 +5,9 @@
 #include "endpoint.h"
 #include <QtNetwork/QNetworkAccessManager>
 #include <QFileInfo>
+#include <QGraphicsScene>
+#include "loadingitem.h"
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,6 +32,9 @@ private:
     QString mainAppVersion;
     QString latestVersion;
     QNetworkAccessManager *manager;
+    QGraphicsScene *scene;
+    LoadingItem *spinner;
+    QTimer *rotationTimer;
 
     void initConfig();
     void getConfigJsonInfo(QByteArray&);
@@ -43,6 +49,8 @@ private:
     void deleteTempUpdateFolder();
 
     void updateLocalVersion();
+
+    void initLoadingItem();
 
 };
 #endif // MAINWINDOW_H
