@@ -150,7 +150,7 @@ color:white;
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item alignment="Qt::AlignHCenter">
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="pushButtonCancel">
             <property name="styleSheet">
              <string notr="true">#pushButton{
 background-color: #00000000;
