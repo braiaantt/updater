@@ -47,7 +47,7 @@ void MainWindow::initConfig(){
         file.close();
 
     } else {
-        qDebug()<<"error al abrir el archivo: "<<file.fileName();
+        ui->label->setText("Error al abrir el archivo de configuración");
         return;
     }
 
@@ -60,12 +60,12 @@ void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
     QJsonDocument jsonDoc = QJsonDocument::fromJson(fileBytes, &parseError);
 
     if (parseError.error != QJsonParseError::NoError) {
-        qDebug() << "Error al leer el archivo JSON:" << parseError.errorString();
+        ui->label->setText("Error al leer el archivo de configuración!");
         return;
     }
 
     if(!jsonDoc.isObject()){
-        qDebug()<<"Formato del archivo de configuración incorrecto";
+        ui->label->setText("Formato del archivo de configuración incorrecto");
         return;
     }
 
@@ -121,10 +121,10 @@ void MainWindow::getLatestAppVersion(){
     }
 
     if(reply){
-        qDebug()<<"Solicitando ultima version de la aplicación...";
+        ui->label->setText("Obteniendo la ultima versión...");
         connect(reply, &QNetworkReply::finished, this, &MainWindow::latestAppVersionRequestFinished);
     } else {
-        qDebug()<<"No se ha podido realizar la solicitud";
+        ui->label->setText("No se pudo realizar la solicitud al servidor!");
     }
 
 }
@@ -134,12 +134,12 @@ void MainWindow::latestAppVersionRequestFinished(){
     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
 
     if(reply->error() != QNetworkReply::NoError){
-        qDebug()<<"Hubo un error en la respuesta";
+        ui->label->setText("Error en la respuesta del servidor");
         reply->deleteLater();
         return;
     }
 
-    qDebug()<<"Procesando respuesta...";
+    ui->label->setText("Procesando respuesta...");
 
     QByteArray response = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(response);
@@ -149,10 +149,10 @@ void MainWindow::latestAppVersionRequestFinished(){
         latestVersion = jsonObj["data"].toString();
 
         if(isUpdateRequired(latestVersion)){
-            qDebug()<<"descargando nueva version...";
+            ui->label->setText("Descargando nueva version...");
             downloadNewUpdate(latestVersion);
         } else{
-            qDebug()<<"no hay descarga requerida!";
+            ui->label->setText("No hay nuevas actualizaciones!");
         }
 
     }
@@ -184,10 +184,10 @@ void MainWindow::downloadNewUpdate(QString &latestVersion){
     }
 
     if(reply){
-        qDebug()<<"realizando descarga de la nueva version... ("<<latestVersion<<")";
+        ui->label->setText("Descargando la version: '" + latestVersion + "'...");
         connect(reply, &QNetworkReply::finished, this, &MainWindow::downloadNewUpdateRequestFinished);
     } else {
-        qDebug()<<"No se ha podido realizar la solicitud";
+        ui->label->setText("No se pudo realizar la solicitud de descarga!");
     }
 
 }
@@ -198,10 +198,11 @@ void MainWindow::downloadNewUpdateRequestFinished(){
 
     if(reply->error() != QNetworkReply::NoError){
         qDebug()<<"Hubo un error en la respuesta de la descarga";
+        ui->label->setText("Error al descargar la nueva versión!");
         return;
     }
 
-    qDebug()<<"procesando respuesta...";
+    ui->label->setText("Procesando respuesta...");
 
     QVariant header = reply->header(QNetworkRequest::ContentDispositionHeader);
 
@@ -210,7 +211,7 @@ void MainWindow::downloadNewUpdateRequestFinished(){
         QString contentDisposition = header.toString();
 
         if(contentDisposition.isEmpty()){
-            qDebug()<<"El nombre del archivo no es valido!";
+            ui->label->setText("Error en la respuesta. No hay nombre asignado");
             return;
         }
 
@@ -233,6 +234,8 @@ void MainWindow::downloadNewUpdateRequestFinished(){
                 qDebug()<<"extension de archivo no valida!";
             }
 
+        } else {
+            ui->label->setText("Error del servidor. No se pudo identificar el nombre del archivo");
         }
 
     } else {
@@ -249,7 +252,7 @@ bool MainWindow::saveExe(QString& fileName, QByteArray& fileBytes){
 
     if(exeFile.exists()) {
         if (!exeFile.remove()) {
-            qDebug() << "No se pudo eliminar el archivo existente:" << exePath;
+            ui->label->setText("No se pudo eliminar el archivo: " + fileName);
             return false;
         }
     }
@@ -257,9 +260,9 @@ bool MainWindow::saveExe(QString& fileName, QByteArray& fileBytes){
     if (exeFile.open(QFile::WriteOnly | QFile::Truncate)) {
         exeFile.write(fileBytes);
         exeFile.close();
-        qDebug() << "Archivo .exe guardado en:" << exePath;
+        ui->label->setText("Archivo guardado correctamente.");
     } else {
-        qDebug() << "No se pudo abrir el archivo para escribir:" << exePath;
+        ui->label->setText("Error al intentar escribir el archivo: " + fileName);
         return false;
     }
 
@@ -274,25 +277,20 @@ bool MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
     QDir tempFolder;
 
     if(!tempFolder.exists(tempFolderPath)){
-        if(tempFolder.mkpath(tempFolderPath)){
-            qDebug()<<"carpeta temporal creada con exito!";
-        } else {
-            qDebug()<<"error al crear la carpeta temporal!";
+        if(!tempFolder.mkpath(tempFolderPath)){
+            ui->label->setText("Error al crear la carpeta temporal de actualización!");
             return false;
         }
-    } else {
-        qDebug()<<"la carpeta temporal ya existe!";
     }
 
     QFile zipFile(tempFolderPath + "/" + fileName);
-    if(zipFile.open(QFile::WriteOnly)){
-
-        zipFile.write(fileBytes);
-        zipFile.close();
-
-    } else {
-        qDebug()<<"Error al crear o abrir el zipFile";
+    if(!zipFile.open(QFile::WriteOnly)){
+        ui->label->setText("Error al abrir el zip de la nueva actualización!");
+        return false;
     }
+
+    zipFile.write(fileBytes);
+    zipFile.close();
 
     QStringList command = QStringList()
                           << "Expand-Archive"
@@ -302,12 +300,12 @@ bool MainWindow::saveZip(QString& fileName, QByteArray& fileBytes){
     int exitCode = QProcess::execute("powershell", command);
 
     if (exitCode == 0) {
-        qDebug() << "Descompresión exitosa! Copiando archivos";
+        ui->label->setText("Descompresion exitosa! Copiando archivos!");
         applyUpdateFiles();
         deleteTempUpdateFolder();
 
     } else {
-        qDebug()<< "Error al descomprimir el archivo";
+        ui->label->setText("Error al descomprimir el archivo de actualización!");
         return false;
     }
 
@@ -322,7 +320,7 @@ void MainWindow::applyUpdateFiles(){
     QFileInfoList entries;
 
     if(!tempUpdateDir.exists()){
-        qDebug()<<"El path: "<<tempUpdateDir.path()<<" no existe!";
+        ui->label->setText("No se encontró la carpeta de actualización!");
         return;
     }
 
@@ -333,14 +331,14 @@ void MainWindow::applyUpdateFiles(){
 
         if(!entry.fileName().endsWith("zip")){
             if(!searchFile(updaterDir.path(), entry)){
-                qDebug()<<"Creando archivo: "<<entry.fileName();
+                ui->label->setText("Creando archivo: " + entry.fileName());
                 copyFile(entry.absoluteFilePath(), updaterDir.filePath(entry.fileName()));
             }
         }
 
     }
 
-    qDebug()<<"Reemplazo de archivos finalizado!";
+    ui->label->setText("Instalación de archivos finalizada!");
 
 }
 
@@ -381,13 +379,14 @@ void MainWindow::copyFile(const QString& source, const QString& target) const{
     QFile targetFile(target);
 
     if(targetFile.exists() && !targetFile.remove()){
-        qDebug()<<"Hubo un error al eliminar el archivo: "<<target;
+        ui->label->setText("Error al eliminar el archivo: " + target);
+        return;
     }
 
     if(!QFile::copy(source, target)){
-        qDebug()<<"Error al copiar el archivo: "<<source;
+        ui->label->setText("Error al copiar el archivo" + source);
     } else {
-        qDebug()<<"Archivo: "<<source<<" copiado correctamente!";
+        ui->label->setText("Archivo: " + source + "copiado correctamente");
     }
 
 }
@@ -401,7 +400,7 @@ void MainWindow::updateLocalVersion(){
     QJsonObject jsonObj;
 
     if(!updaterConfig.open(QIODevice::ReadOnly)){
-        qDebug()<<"Error al intentar leer el archivo de configuración. Actualizacion de nueva version incompleta.";
+        ui->label->setText("Error al leer el archivo de configuración para actualización!");
         return;
     }
 
@@ -411,7 +410,7 @@ void MainWindow::updateLocalVersion(){
     jsonDoc = QJsonDocument::fromJson(fileBytes);
 
     if(!jsonDoc.isObject()){
-        qDebug()<<"Archivo de configuración con formato incorrecto.";
+        ui->label->setText("Archivo de configuración con formato incorrecto!");
         return;
     }
 
@@ -422,13 +421,14 @@ void MainWindow::updateLocalVersion(){
 
     if(!updaterConfig.open(QIODevice::WriteOnly | QIODevice::Truncate)){
         qDebug()<<"Error al abrir el archivo para reescritura";
+        ui->label->setText("Error al intentar actualizar el archivo de configuración!");
         return;
     }
 
     updaterConfig.write(jsonDoc.toJson(QJsonDocument::Indented));
     updaterConfig.close();
 
-    qDebug()<<"Archivo de configuración actualizado correctamente!";
+    ui->label->setText("Archivo de configuración actualizado correctamente!");
 
 }
 
@@ -437,12 +437,12 @@ void MainWindow::deleteTempUpdateFolder(){
     QDir tempUpdateFolderDir(QDir(QCoreApplication::applicationDirPath()).filePath("tempUpdate"));
     if(tempUpdateFolderDir.exists()){
         if(!tempUpdateFolderDir.removeRecursively()){
-            qDebug()<<"Error al eliminar la carpeta tempUpdate!";
+            ui->label->setText("Error al eliminar la carpeta temporal!");
         } else {
-            qDebug()<<"Carpeta tempUpdate eliminada correctamente! ";
+            ui->label->setText("Carpeta temporal eliminada correctamente!");
         }
     } else {
-        qDebug()<<"El directorio: "<<tempUpdateFolderDir.absolutePath()<< " no existe!";
+        ui->label->setText("No se encontró la carpeta temporal!");
     }
 
 }
