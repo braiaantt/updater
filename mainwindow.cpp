@@ -109,6 +109,8 @@ void MainWindow::getConfigJsonInfo(QByteArray &fileBytes){
 
 void MainWindow::getLatestAppVersion(){
 
+    if(endpoints.empty()) return;
+
     Endpoint &endpoint = endpoints[0];
     QUrl url(hostName + endpoint.getRoute());
     QNetworkRequest request(url);
