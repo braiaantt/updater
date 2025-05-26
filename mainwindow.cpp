@@ -4,7 +4,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 #include <QUrl>
 #include <QDir>
@@ -21,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     scene = new QGraphicsScene(this);
     rotationTimer = new QTimer(this);
     spinner = new LoadingItem();
+    currentReply = nullptr;
 
     QTimer::singleShot(0, this, [this]{
         initConfig();
@@ -114,15 +114,14 @@ void MainWindow::getLatestAppVersion(){
     Endpoint &endpoint = endpoints[0];
     QUrl url(hostName + endpoint.getRoute());
     QNetworkRequest request(url);
-    QNetworkReply *reply = nullptr;
 
     if(endpoint.getMethod() == "GET"){
-        reply = manager->get(request);
+        currentReply = manager->get(request);
     }
 
-    if(reply){
+    if(currentReply){
         ui->label->setText("Obteniendo la ultima versión...");
-        connect(reply, &QNetworkReply::finished, this, &MainWindow::latestAppVersionRequestFinished);
+        connect(currentReply, &QNetworkReply::finished, this, &MainWindow::latestAppVersionRequestFinished);
     } else {
         ui->label->setText("No se pudo realizar la solicitud al servidor!");
     }
@@ -453,3 +452,16 @@ void MainWindow::initLoadingItem(){
     rotationTimer->start(30);
 
 }
+
+void MainWindow::on_pushButtonCancel_clicked()
+{
+
+    if(currentReply && currentReply->isRunning()){
+
+        currentReply->abort();
+        ui->label->setText("Actualización detenida.");
+
+    }
+
+}
+
