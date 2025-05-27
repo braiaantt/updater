@@ -20,6 +20,10 @@ public:
     void setGetLatestVersionRoute(QString &getLatestVersionRoute);
     void setDownloadVersionRoute(QString &downloadVersionRoute);
     void setSendLogRoute(QString &sendLogRoute);
+signals:
+    void latestVersionReceived(double latestVersion);
+    void downloadFinished(QString fileName, QByteArray data);
+
 private:
     QString hostName;
     QString getLatestVersionRoute;
