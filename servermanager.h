@@ -2,7 +2,7 @@
 #define SERVERMANAGER_H
 
 #include <QString>
-#include <QNetworkReply>
+#include <QNetworkAccessManager>
 
 class ServerManager
 {
@@ -23,6 +23,8 @@ private:
     QString getLatestVersionRoute;
     QString downloadVersionRoute;
     QString sendLogRoute;
+
+    QNetworkAccessManager *networkManager;
 };
 
 #endif // SERVERMANAGER_H
