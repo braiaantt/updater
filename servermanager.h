@@ -8,6 +8,9 @@ class ServerManager
 {
 public:
     ServerManager();
+    void getLatestVersion();
+    void downloadNewVersion(QString& version);
+    void sendLog(QString &log);
 
     //setters
     void setHostName(QString& hostName);
