@@ -152,12 +152,12 @@ color:white;
           <item alignment="Qt::AlignHCenter">
            <widget class="QPushButton" name="pushButtonCancel">
             <property name="styleSheet">
-             <string notr="true">#pushButton{
+             <string notr="true">#pushButtonCancel{
 background-color: #00000000;
 color: white;
 }
 
-#pushButton::hover{
+#pushButtonCancel::hover{
 text-decoration: underline;
 }</string>
             </property>
