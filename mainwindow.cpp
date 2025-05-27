@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     rotationTimer = new QTimer(this);
     spinner = new LoadingItem();
     currentReply = nullptr;
+    secsToQuit = 4;
 
     QTimer::singleShot(0, this, [this]{
         initConfig();
@@ -457,11 +458,32 @@ void MainWindow::on_pushButtonCancel_clicked()
 {
 
     if(currentReply && currentReply->isRunning()){
-
         currentReply->abort();
-        ui->label->setText("Actualización detenida.");
+        quitUpdater();
+        ui->pushButtonCancel->setEnabled(false);
 
     }
 
 }
 
+void MainWindow::quitUpdater(){
+
+    QTimer *quitTimer = new QTimer(this);
+    quitTimer->setInterval(1000);
+
+    connect(quitTimer, &QTimer::timeout, this, [=]{
+
+        if(secsToQuit == 0){
+
+            quitTimer->stop();
+            QCoreApplication::quit();
+
+        }
+        ui->label->setText("Actualización detenida. Cerrando app en " + QString::number(secsToQuit));
+        secsToQuit--;
+    });
+
+    ui->label->setText("Actualización detenida. Cerrando app en " + QString::number(secsToQuit));
+    quitTimer->start();
+
+}
