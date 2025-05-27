@@ -14,13 +14,13 @@ public:
 
     //setters
     void setHostName(QString& hostName);
-    void setGetVersionRoute(QString &versionRoute);
+    void setGetLatestVersionRoute(QString &getLatestVersionRoute);
     void setDownloadVersionRoute(QString &downloadVersionRoute);
     void setSendLogRoute(QString &sendLogRoute);
 
 private:
     QString hostName;
-    QString getVersionRoute;
+    QString getLatestVersionRoute;
     QString downloadVersionRoute;
     QString sendLogRoute;
 };

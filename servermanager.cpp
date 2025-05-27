@@ -1,4 +1,5 @@
 #include "servermanager.h"
+#include <QUrl>
 
 ServerManager::ServerManager()
 {
@@ -10,8 +11,8 @@ void ServerManager::setHostName(QString &_hostName){
     hostName = _hostName;
 }
 
-void ServerManager::setGetVersionRoute(QString &_versionRoute){
-    getVersionRoute = _versionRoute;
+void ServerManager::setGetLatestVersionRoute(QString &_versionRoute){
+    getLatestVersionRoute = _versionRoute;
 }
 
 void ServerManager::setDownloadVersionRoute(QString &_downloadVersionRoute){
