@@ -21,7 +21,7 @@ public:
 private:
     QString hostName;
     QString getVersionRoute;
-    QString downloadVersionRooute;
+    QString downloadVersionRoute;
     QString sendLogRoute;
 };
 
