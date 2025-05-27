@@ -4,10 +4,13 @@
 #include <QString>
 #include <QNetworkAccessManager>
 
-class ServerManager
+class ServerManager : public QObject
 {
+    Q_OBJECT
+
 public:
-    ServerManager();
+    explicit ServerManager(QObject *parent = nullptr);
+
     void getLatestVersion();
     void downloadNewVersion(QString& version);
     void sendLog(QString &log);
@@ -17,7 +20,6 @@ public:
     void setGetLatestVersionRoute(QString &getLatestVersionRoute);
     void setDownloadVersionRoute(QString &downloadVersionRoute);
     void setSendLogRoute(QString &sendLogRoute);
-
 private:
     QString hostName;
     QString getLatestVersionRoute;
@@ -25,6 +27,10 @@ private:
     QString sendLogRoute;
 
     QNetworkAccessManager *networkManager;
+
+    void getLatestVersionRequestFinished();
+    void downloadNewVersionRequestFinished();
+    void sendLogRequestFinished();
 };
 
 #endif // SERVERMANAGER_H
