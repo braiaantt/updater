@@ -479,11 +479,11 @@ void MainWindow::quitUpdater(){
             QCoreApplication::quit();
 
         }
-        ui->label->setText("Actualización detenida.\nCerrando app en " + QString::number(secsToQuit));
+        ui->label->setText("Actualización detenida.\nCerrando en " + QString::number(secsToQuit));
         secsToQuit--;
     });
 
-    ui->label->setText("Actualización detenida.\nCerrando app en " + QString::number(secsToQuit));
+    ui->label->setText("Actualización detenida.\nCerrando en " + QString::number(secsToQuit));
     quitTimer->start();
 
 }
