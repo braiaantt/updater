@@ -42,6 +42,7 @@ private:
     QGraphicsScene *scene;
     LoadingItem *spinner;
     QTimer *rotationTimer;
+    int secsToQuit;
 
     void initConfig();
     void getConfigJsonInfo(QByteArray&);
@@ -54,10 +55,9 @@ private:
     bool searchFile(QString, const QFileInfo&) const;
     void copyFile(const QString&, const QString&) const;
     void deleteTempUpdateFolder();
-
     void updateLocalVersion();
-
     void initLoadingItem();
+    void quitUpdater();
 
 };
 #endif // MAINWINDOW_H
