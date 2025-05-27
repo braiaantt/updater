@@ -159,6 +159,10 @@ color: white;
 
 #pushButtonCancel::hover{
 text-decoration: underline;
+}
+
+#pushButtonCancel:disabled{
+text-decoration: underline;
 }</string>
             </property>
             <property name="text">
