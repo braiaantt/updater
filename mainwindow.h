@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "filemanager.h"
+#include "servermanager.h"
 #include "endpoint.h"
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
@@ -28,11 +30,12 @@ public slots:
 
 private slots:
 
-
     void on_pushButtonCancel_clicked();
 
 private:
     Ui::MainWindow *ui;
+    FileManager *fileManager;
+    ServerManager *serverManager;
     QVector<Endpoint> endpoints;
     QString hostName;
     QString mainAppVersion;
@@ -44,7 +47,8 @@ private:
     QTimer *rotationTimer;
     int secsToQuit;
 
-    void initConfig();
+    void initServerManager();
+    void initFileManager();
     void getConfigJsonInfo(QByteArray&);
     void getLatestAppVersion();
     bool isUpdateRequired(QString&);
