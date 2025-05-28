@@ -92,6 +92,7 @@ bool FileManager::searchFile(const QString &baseDir, const QFileInfo &fileSearch
 
                 if(entry.fileName() == fileSearched.fileName()){
                     copyFile(fileSearched.absoluteFilePath(), entry.absoluteFilePath());
+                    return true;
                 }
             }
 
@@ -99,7 +100,7 @@ bool FileManager::searchFile(const QString &baseDir, const QFileInfo &fileSearch
 
     }
 
-    return true;
+    return false;
 
 }
 
