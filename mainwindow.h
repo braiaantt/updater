@@ -49,6 +49,7 @@ private:
 
     void initServerManager();
     void initFileManager();
+    void connectSignals();
     void initUpdate();
     void getConfigJsonInfo(QByteArray&);
     void getLatestAppVersion();
