@@ -49,6 +49,7 @@ private:
 
     void initServerManager();
     void initFileManager();
+    void initUpdate();
     void getConfigJsonInfo(QByteArray&);
     void getLatestAppVersion();
     bool isUpdateRequired(QString&);
