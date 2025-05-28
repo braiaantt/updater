@@ -11,12 +11,12 @@ class FileManager : public QObject
 
 public:
     explicit FileManager(QObject *parent = nullptr);
-    QByteArray readFile(QString &filePath);
-    bool replaceOrCreateFile(QString &filePath, QByteArray &data);
-    bool createFolder(QString &dir);
-    bool descompressZipFile(QString &zipFilePath, QString &destinationPath);
-    bool searchFile(QString &path, const QFileInfo &fileSearched);
-    QFileInfoList getDirEntries(QString &dir);
+    QByteArray readFile(const QString &filePath);
+    bool replaceOrCreateFile(const QString &filePath, const QByteArray &data);
+    bool createFolder(const QString &dir);
+    bool descompressZipFile(const QString &zipFilePath, const QString &destinationPath);
+    bool searchFile(const QString &path, const QFileInfo &fileSearched);
+    QFileInfoList getDirEntries(const QString &dir);
 };
 
 #endif // FILEMANAGER_H
