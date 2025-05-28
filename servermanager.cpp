@@ -21,7 +21,7 @@ void ServerManager::getLatestVersion(){
 
 }
 
-void ServerManager::downloadNewVersion(QString &version){
+void ServerManager::downloadNewVersion(){
 
     QUrl url(hostName + "/" + getLatestVersionRoute);
     QNetworkRequest request(url);

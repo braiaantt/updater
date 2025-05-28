@@ -12,7 +12,7 @@ public:
     explicit ServerManager(QObject *parent = nullptr);
 
     void getLatestVersion();
-    void downloadNewVersion(QString& version);
+    void downloadNewVersion();
     void sendLog(QString &log);
 
     //setters
