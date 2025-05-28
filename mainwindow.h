@@ -25,7 +25,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void latestAppVersionRequestFinished();
+    void latestAppVersionRequestFinished(double latestVersion);
     void downloadNewUpdateRequestFinished();
 
 private slots:
