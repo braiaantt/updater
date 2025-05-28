@@ -107,14 +107,23 @@ bool FileManager::searchFile(const QString &baseDir, const QFileInfo &fileSearch
 void FileManager::copyFile(const QString &source, const QString &target){
 
     QFile targetFile(target);
+    QString error;
 
     if(targetFile.exists() && !targetFile.remove()){
-        qDebug()<<"Error al eliminar el archivo: "<<target;
+        error = "Error al eliminar el archivo: " + target;
+        errorCopyFiles << error;
         return;
     }
 
     if(!QFile::copy(source, target)){
-        qDebug()<<"Error al copiar el archivo: "<<source;
+        error = "Error al copiar el archivo: " + source;
+        errorCopyFiles << error;
     }
 
+}
+
+//getters
+
+const QStringList&  FileManager::getErrorCopyFiles(){
+    return errorCopyFiles;
 }
