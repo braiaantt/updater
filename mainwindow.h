@@ -26,7 +26,7 @@ public:
 
 public slots:
     void latestAppVersionRequestFinished(double latestVersion);
-    void downloadNewUpdateRequestFinished();
+    void downloadNewUpdateRequestFinished(QString fileName, QByteArray data);
 
 private slots:
 
