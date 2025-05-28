@@ -57,6 +57,22 @@ bool FileManager::createFolder(const QString &dir){
 
 }
 
+bool FileManager::deleteRecursively(const QString &dir){
+
+    if(!errorCopyFiles.isEmpty()) return false;
+
+    QDir folderDir(dir);
+
+    if(folderDir.exists()){
+        if(!folderDir.removeRecursively()){
+            errorCopyFiles << "Error al eliminar la carpeta: " + dir;
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool FileManager::descompressZipFile(const QString &zipFilePath, const QString &destinationPath){
 
     QStringList command = QStringList()
