@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include "filemanager.h"
 #include "servermanager.h"
-#include "endpoint.h"
+#include "mainappinfo.h""
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QFileInfo>
@@ -36,6 +36,7 @@ private:
     Ui::MainWindow *ui;
     FileManager *fileManager;
     ServerManager *serverManager;
+    MainAppInfo mainAppInfo;
     QString tempFolderName;
     QGraphicsScene *scene;
     LoadingItem *spinner;
