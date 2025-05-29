@@ -1,9 +1,9 @@
 #include "servermanager.h"
 #include <QUrl>
 #include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QNetworkReply>
 
 ServerManager::ServerManager(QObject *parent) :
     QObject(parent)
@@ -49,7 +49,7 @@ void ServerManager::getLatestVersionRequestFinished(){
     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
 
     if(reply->error() != QNetworkReply::NoError){
-        qDebug()<<"Hubo un error en la respuesta al obtener la ultima version";
+        emit errorHasOcurred(reply->errorString());
         reply->deleteLater();
         return;
     }
@@ -58,7 +58,7 @@ void ServerManager::getLatestVersionRequestFinished(){
     QJsonDocument jsonDoc = QJsonDocument::fromJson(response);
 
     if(!jsonDoc.isObject()){
-        qDebug()<<"Respuesta mal formateada!";
+        emit errorHasOcurred("Error al obtener la última version. Respuesta del servidor mal formateada!");
         reply->deleteLater();
         return;
     }
@@ -71,7 +71,7 @@ void ServerManager::getLatestVersionRequestFinished(){
     if(isDouble){
         emit latestVersionReceived(version);
     } else {
-        //emit error
+        emit errorHasOcurred("Versión obtenida del servidor no válida!");
     }
 
     reply->deleteLater();
@@ -83,7 +83,7 @@ void ServerManager::downloadNewVersionRequestFinished(){
     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
 
     if(reply->error() != QNetworkReply::NoError){
-        qDebug()<<"Hubo un error en la respuesta de la descarga";
+        emit errorHasOcurred(reply->errorString());
         reply->deleteLater();
         return;
     }
@@ -91,7 +91,7 @@ void ServerManager::downloadNewVersionRequestFinished(){
     QVariant header = reply->header(QNetworkRequest::ContentDispositionHeader);
 
     if(!header.isValid()){
-        qDebug()<<"El header de la respuesta no es valido!";
+        emit errorHasOcurred("Error en la respuesta. Header invalido!");
         reply->deleteLater();
         return;
     }
@@ -99,7 +99,7 @@ void ServerManager::downloadNewVersionRequestFinished(){
     QString contentDisposition = header.toString();
 
     if(contentDisposition.isEmpty()){
-        qDebug()<<"Error en la respuesta. No hay nombre de archivo asignado";
+        emit errorHasOcurred("Error en la respuesta. Header valido pero sin contenido!");
         reply->deleteLater();
         return;
     }
@@ -108,7 +108,7 @@ void ServerManager::downloadNewVersionRequestFinished(){
     QRegularExpressionMatch match = regex.match(contentDisposition);
 
     if (!match.hasMatch()) {
-        qDebug()<<"Error en la respuesta. No se encontró el nombre de archivo";
+        emit errorHasOcurred("Error en la respuesta. No se encontró el nombre del archivo");
         reply->deleteLater();
         return;
     }
