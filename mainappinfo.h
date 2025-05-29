@@ -8,6 +8,14 @@ class MainAppInfo
 public:
     MainAppInfo();
 
+    //getters
+    const QString& getVersion();
+    const QString& getFileName();
+
+    //setters
+    void setVersion();
+    void setFileName();
+
 private:
     QString version;
     QString fileName;
