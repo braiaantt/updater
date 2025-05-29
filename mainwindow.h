@@ -4,12 +4,9 @@
 #include <QMainWindow>
 #include "filemanager.h"
 #include "servermanager.h"
-#include "mainappinfo.h""
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
-#include <QFileInfo>
-#include <QGraphicsScene>
+#include "mainappinfo.h"
 #include "loadingitem.h"
+#include <QGraphicsScene>
 #include <QTimer>
 
 QT_BEGIN_NAMESPACE

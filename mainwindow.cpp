@@ -1,13 +1,8 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QtNetwork/QNetworkRequest>
-#include <QUrl>
-#include <QDir>
-#include <QProcess>
 #include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -179,7 +174,6 @@ void MainWindow::updateLocalVersion(){
     fileManager->replaceOrCreateFile(updaterConfigPath, newData);
 
 }
-
 
 void MainWindow::initLoadingItem(){
 
