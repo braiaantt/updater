@@ -23,6 +23,7 @@ public:
 signals:
     void latestVersionReceived(double latestVersion);
     void downloadFinished(QString fileName, QByteArray data);
+    void errorHasOcurred(QString error);
 
 private:
     QString hostName;
