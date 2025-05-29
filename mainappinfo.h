@@ -9,15 +9,15 @@ public:
     MainAppInfo();
 
     //getters
-    const QString& getVersion();
+    const double& getVersion();
     const QString& getFileName();
 
     //setters
-    void setVersion();
-    void setFileName();
+    void setVersion(double &version);
+    void setFileName(QString &fileName);
 
 private:
-    QString version;
+    double version;
     QString fileName;
 };
 
