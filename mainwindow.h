@@ -37,7 +37,6 @@ private:
     FileManager *fileManager;
     ServerManager *serverManager;
     QString tempFolderName;
-    QString hostName;
     QString mainAppVersion;
     QString latestVersion;
     QGraphicsScene *scene;
@@ -45,6 +44,7 @@ private:
     QTimer *rotationTimer;
     int secsToQuit;
 
+    void readUpdaterConfigFile();
     void initServerManager();
     void initFileManager();
     void connectSignals();
