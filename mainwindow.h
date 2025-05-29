@@ -37,15 +37,14 @@ private:
     FileManager *fileManager;
     ServerManager *serverManager;
     QString tempFolderName;
-    QString mainAppVersion;
-    QString latestVersion;
     QGraphicsScene *scene;
     LoadingItem *spinner;
     QTimer *rotationTimer;
     int secsToQuit;
 
     void readUpdaterConfigFile();
-    void initServerManager();
+    void initMainAppInfo(QJsonObject &mainAppInfoObj);
+    void initServerManager(QJsonObject &serverInfoObj);
     void initFileManager();
     void connectSignals();
     void initUpdate();
