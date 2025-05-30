@@ -24,6 +24,7 @@ public:
 public slots:
     void latestAppVersionRequestFinished(double latestVersion);
     void downloadNewUpdateRequestFinished(QString fileName, QByteArray data);
+    void showErrorMessage(const QString &errors);
 
 private slots:
 
@@ -47,7 +48,6 @@ private:
     void connectSignals();
     void initUpdate();
     void downloadNewUpdate(QString&);
-    void showErrorMessage(const QString &errors);
     void updateLocalVersion();
     void initLoadingItem();
     void quitUpdater();
