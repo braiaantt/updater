@@ -1,6 +1,7 @@
 #include "filemanager.h"
 #include <QFile>
 #include <QProcess>
+#include <QJsonDocument>
 
 FileManager::FileManager(QObject *parent) :
     QObject(parent)
@@ -151,6 +152,17 @@ QFileInfoList FileManager::getDirEntries(const QString &dir){
 
     return tempUpdateDir.entryInfoList();
 
+}
+
+bool FileManager::jsonIsValid(const QByteArray &data){
+
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+
+    if(parseError.error != QJsonParseError::NoError){
+        return false;
+    }
+    return true;
 }
 
 //getters
