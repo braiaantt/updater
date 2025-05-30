@@ -54,7 +54,7 @@ void MainWindow::readUpdaterConfigFile(){
 void MainWindow::initMainAppInfo(QJsonObject &mainAppInfoObj){
 
     QString fileName = mainAppInfoObj["fileName"].toString();
-    double version = mainAppInfoObj["version"].toDouble();
+    double version = mainAppInfoObj["version"].toString().toDouble();
 
     mainAppInfo.setFileName(fileName);
     mainAppInfo.setVersion(version);
@@ -85,6 +85,7 @@ void MainWindow::connectSignals(){
 
     connect(serverManager, &ServerManager::latestVersionReceived, this, &MainWindow::latestAppVersionRequestFinished);
     connect(serverManager, &ServerManager::downloadFinished, this, &MainWindow::downloadNewUpdateRequestFinished);
+    connect(serverManager, &ServerManager::errorHasOcurred, this, &MainWindow::showErrorMessage);
 
 }
 
