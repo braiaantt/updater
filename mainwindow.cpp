@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     QTimer::singleShot(0, this, [this]{
+        initFileManager();
         readUpdaterConfigFile();
         initLoadingItem();
     });
@@ -32,21 +33,19 @@ void MainWindow::readUpdaterConfigFile(){
     QString updaterConfigPath = QCoreApplication::applicationDirPath() + "/updater-config.json";
     QByteArray fileBytes = fileManager->readFile(updaterConfigPath);
 
-    if(fileBytes.isEmpty()){
+    if(fileBytes.isEmpty() || !fileManager->jsonIsValid(fileBytes)){
         qDebug()<<"Error al leer el archivo de configuracion!";
         return;
     }
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(fileBytes);
     QJsonObject jsonObj = jsonDoc.object();
-    QJsonObject mainAppInfoObj = jsonDoc["mainAppInfo"].toObject();
-    QJsonObject serverInfoObj = jsonDoc["serverInfo"].toObject();
+    QJsonObject mainAppInfoObj = jsonObj["mainAppInfo"].toObject();
+    QJsonObject serverInfoObj = jsonObj["serverInfo"].toObject();
 
     initMainAppInfo(mainAppInfoObj);
     initServerManager(serverInfoObj);
-    initFileManager();
     connectSignals();
-
     initUpdate();
 
 }
