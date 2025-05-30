@@ -4,6 +4,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QTimer>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -109,46 +110,51 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
     if(fileName.endsWith(".exe")){
 
         QString filePath = appDirPath + "/" + fileName;
-        if (fileManager->replaceOrCreateFile(filePath, data)) updateLocalVersion();
+        if (!fileManager->replaceOrCreateFile(filePath, data)){
+            showErrorMessage("Error al crear o copiar el archivo: " + fileName);
+        } else{
+            updateLocalVersion();
+        }
 
     } else if(fileName.endsWith(".zip")){
 
         QString tempUpdateFolder = appDirPath + "/" + tempFolderName;
         QString zipFilePath = tempUpdateFolder + "/" + fileName;
 
-        if(fileManager->createFolder(tempUpdateFolder) &&
-           fileManager->replaceOrCreateFile(zipFilePath, data) &&
-           fileManager->descompressZipFile(zipFilePath, tempUpdateFolder))
+        if(!fileManager->createFolder(tempUpdateFolder) ||
+           !fileManager->replaceOrCreateFile(zipFilePath, data) ||
+           !fileManager->descompressZipFile(zipFilePath, tempUpdateFolder))
         {
-
-            QDir tempUpdateDir(tempUpdateFolder);
-            tempUpdateDir.setFilter(QDir::NoDotAndDotDot | QDir::AllEntries);
-            QFileInfoList entries = tempUpdateDir.entryInfoList();
-
-            for(const QFileInfo &entry : entries){
-                if(entry.fileName() != fileName){
-
-                    if(!fileManager->searchFile(appDirPath, entry)){
-
-                        QString target = appDirPath + "/" + fileName;
-                        fileManager->copyFile(entry.absoluteFilePath(), target);
-
-                    }
-
-                }
-            }
-
-            if(!fileManager->deleteRecursively(tempUpdateFolder)){
-                QStringList errors = fileManager->getErrorCopyFiles();
-                //show errors;
-            } else {
-                updateLocalVersion();
-            }
-
+            QStringList errors = fileManager->getErrorCopyFiles();
+            showErrorMessage(errors.join("\n"));
+            return;
         }
 
+        QFileInfoList entries = fileManager->getDirEntries(tempUpdateFolder);
+
+        for(const QFileInfo &entry : entries){
+            if(entry.fileName() != fileName){
+
+                if(!fileManager->searchFile(appDirPath, entry)){
+
+                    QString target = appDirPath + "/" + fileName;
+                    fileManager->copyFile(entry.absoluteFilePath(), target);
+
+                }
+
+            }
+        }
+
+        if(!fileManager->deleteRecursively(tempUpdateFolder)){
+            QStringList errors = fileManager->getErrorCopyFiles();
+            showErrorMessage("Error al instalar los siguientes archivos:\n" + errors.join("\n"));
+            return;
+        }
+
+        updateLocalVersion();
+
     } else {
-        qDebug()<<"extension de archivo no valida!";
+        showErrorMessage("Archivo recibido del servidor no válido!");
     }
 
 }
@@ -196,12 +202,12 @@ void MainWindow::initLoadingItem(){
 void MainWindow::on_pushButtonCancel_clicked()
 {
 
-    if(currentReply && currentReply->isRunning()){
+    /*if(currentReply && currentReply->isRunning()){
         currentReply->abort();
         quitUpdater();
         ui->pushButtonCancel->setEnabled(false);
 
-    }
+    }*/
 
 }
 
@@ -224,5 +230,11 @@ void MainWindow::quitUpdater(){
 
     ui->label->setText("Actualización detenida.\nCerrando en " + QString::number(secsToQuit));
     quitTimer->start();
+
+}
+
+void MainWindow::showErrorMessage(const QString &errorMessage){
+
+    QMessageBox::warning(this,"Error",errorMessage);
 
 }
