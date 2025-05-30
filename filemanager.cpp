@@ -137,6 +137,22 @@ void FileManager::copyFile(const QString &source, const QString &target){
 
 }
 
+QFileInfoList FileManager::getDirEntries(const QString &dir){
+
+    QDir tempUpdateDir(dir);
+    QFileInfoList entries;
+
+    if(tempUpdateDir.exists()){
+
+        tempUpdateDir.setFilter(QDir::NoDotAndDotDot | QDir::AllEntries);
+        entries = tempUpdateDir.entryInfoList();
+
+    }
+
+    return tempUpdateDir.entryInfoList();
+
+}
+
 //getters
 
 const QStringList&  FileManager::getErrorCopyFiles(){
