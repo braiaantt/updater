@@ -30,10 +30,12 @@ bool FileManager::replaceOrCreateFile(const QString &filePath, const QByteArray 
         return false;
     }
 
-    if(file.open(QIODevice::WriteOnly | QIODevice::Truncate)){
-        file.write(data);
-        file.close();
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)){
+        return false;
     }
+
+    file.write(data);
+    file.close();
 
     return true;
 
