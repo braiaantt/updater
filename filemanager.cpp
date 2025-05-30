@@ -26,11 +26,8 @@ bool FileManager::replaceOrCreateFile(const QString &filePath, const QByteArray 
 
     QFile file(filePath);
 
-    if(file.exists()){
-        if(!file.remove()){
-            qDebug()<<"Error al remover el archivo";
-            return false;
-        }
+    if(file.exists() && !file.remove()){
+        return false;
     }
 
     if(file.open(QIODevice::WriteOnly | QIODevice::Truncate)){
