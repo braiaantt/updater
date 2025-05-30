@@ -19,6 +19,7 @@ public:
     bool searchFile(const QString &baseDir, const QFileInfo &fileSearched);
     void copyFile(const QString &source, const QString &target);
     QFileInfoList getDirEntries(const QString &dir);
+    bool jsonIsValid(const QByteArray &data);
 
     //getters
     const QStringList& getErrorCopyFiles();
