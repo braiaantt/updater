@@ -7,6 +7,7 @@
 
 ServerManager::ServerManager(QObject *parent) :
     QObject(parent)
+    , networkManager(new QNetworkAccessManager(this))
 {
 
 }
