@@ -47,6 +47,7 @@ private:
     void connectSignals();
     void initUpdate();
     void downloadNewUpdate(QString&);
+    void showErrorMessage(const QString &errors);
     void updateLocalVersion();
     void initLoadingItem();
     void quitUpdater();
