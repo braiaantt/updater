@@ -165,7 +165,7 @@ void MainWindow::updateLocalVersion(){
     QByteArray data = fileManager->readFile(updaterConfigPath);
 
     if(data.isEmpty()){
-        qDebug()<<"Error al leer el archivo de configuracion!";
+        showErrorMessage("Error al leer el archivo de configuración para actualizar versión local. Nueva versión: " + QString::number(mainAppInfo.getVersion()));
         return;
     }
 
