@@ -16,8 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     QTimer::singleShot(0, this, [this]{
         readUpdaterConfigFile();
-        connectSignals();
-        initUpdate();
         initLoadingItem();
     });
 
@@ -46,6 +44,9 @@ void MainWindow::readUpdaterConfigFile(){
     initMainAppInfo(mainAppInfoObj);
     initServerManager(serverInfoObj);
     initFileManager();
+    connectSignals();
+
+    initUpdate();
 
 }
 
