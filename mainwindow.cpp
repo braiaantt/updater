@@ -248,8 +248,10 @@ void MainWindow::quitUpdater(){
 
 }
 
-void MainWindow::showErrorMessage(const QString &errorMessage){
+void MainWindow::showErrorMessageAndQuit(const QString &errorMessage){
 
     QMessageBox::warning(this,"Error",errorMessage);
+
+    quitUpdater("Saliendo de la app en...");
 
 }
