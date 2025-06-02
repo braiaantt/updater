@@ -24,7 +24,7 @@ public:
 public slots:
     void latestAppVersionRequestFinished(double latestVersion);
     void downloadNewUpdateRequestFinished(QString fileName, QByteArray data);
-    void showErrorMessage(const QString &errors);
+    void showErrorMessageAndQuit(const QString &errors);
 
 private slots:
 
