@@ -117,7 +117,7 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
         QString filePath = appDirPath + "/" + fileName;
         if (!fileManager->replaceOrCreateFile(filePath, data)){
             serverManager->sendLog("LOG: Hubo un error al instalar el ejecutable!");
-            showErrorMessage("Error al crear o copiar el archivo: " + fileName);
+            showErrorMessageAndQuit("Error al crear o copiar el archivo: " + fileName);
         } else{
             updateLocalVersion();
             serverManager->sendLog("LOG: Instalacion finalizada correctamente!");
@@ -136,7 +136,7 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
             QStringList errors = fileManager->getErrorCopyFiles();
             QString message = errors.join("\n");
             serverManager->sendLog(message);
-            showErrorMessage(message);
+            showErrorMessageAndQuit(message);
             return;
         }
 
@@ -159,7 +159,7 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
             QStringList errors = fileManager->getErrorCopyFiles();
             QString message = "Error al instalar los siguientes archivos:\n" + errors.join("\n");
             serverManager->sendLog("LOG:" + message);
-            showErrorMessage(message);
+            showErrorMessageAndQuit(message);
             return;
         }
 
@@ -168,8 +168,10 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
 
     } else {
         serverManager->sendLog("LOG: Archivo enviado no valido!");
-        showErrorMessage("Archivo recibido del servidor no valido!");
+        showErrorMessageAndQuit("Archivo recibido del servidor no valido!");
     }
+
+    quitUpdater("Instalacion finalizada correctamente!");
 
 }
 
@@ -180,7 +182,7 @@ void MainWindow::updateLocalVersion(){
 
     if(data.isEmpty()){
         serverManager->sendLog("No se pudo actualizar la version local!");
-        showErrorMessage("Error al leer el archivo de configuracion para actualizar version local. Nueva version: " + QString::number(mainAppInfo.getVersion()));
+        showErrorMessageAndQuit("Error al actualizar la version local. Nueva version: " + QString::number(mainAppInfo.getVersion()));
         return;
     }
 
@@ -252,6 +254,6 @@ void MainWindow::showErrorMessageAndQuit(const QString &errorMessage){
 
     QMessageBox::warning(this,"Error",errorMessage);
 
-    quitUpdater("Saliendo de la app en...");
+    quitUpdater("");
 
 }
