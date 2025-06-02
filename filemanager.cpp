@@ -84,6 +84,7 @@ bool FileManager::descompressZipFile(const QString &zipFilePath, const QString &
 
     if(exitCode == 0) return true;
 
+    errorCopyFiles << "Error al descomprimir el archivo zip!";
     return false;
 
 }
@@ -157,7 +158,7 @@ QFileInfoList FileManager::getDirEntries(const QString &dir){
 bool FileManager::jsonIsValid(const QByteArray &data){
 
     QJsonParseError parseError;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+    QJsonDocument::fromJson(data, &parseError);
 
     if(parseError.error != QJsonParseError::NoError){
         return false;
