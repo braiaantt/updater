@@ -226,7 +226,7 @@ void MainWindow::on_pushButtonCancel_clicked()
 
 }
 
-void MainWindow::quitUpdater(){
+void MainWindow::quitUpdater(const QString &message){
 
     QTimer *quitTimer = new QTimer(this);
     quitTimer->setInterval(1000);
@@ -239,11 +239,11 @@ void MainWindow::quitUpdater(){
             QCoreApplication::quit();
 
         }
-        ui->label->setText("Actualización detenida.\nCerrando en " + QString::number(secsToQuit));
+        ui->label->setText(message + "\nCerrando en " + QString::number(secsToQuit));
         secsToQuit--;
     });
 
-    ui->label->setText("Actualización detenida.\nCerrando en " + QString::number(secsToQuit));
+    ui->label->setText(message + "\nCerrando en " + QString::number(secsToQuit));
     quitTimer->start();
 
 }
