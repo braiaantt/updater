@@ -34,7 +34,7 @@ void MainWindow::readUpdaterConfigFile(){
     QByteArray fileBytes = fileManager->readFile(updaterConfigPath);
 
     if(fileBytes.isEmpty() || !fileManager->jsonIsValid(fileBytes)){
-        qDebug()<<"Error al leer el archivo de configuracion!";
+        showErrorMessage("Error al leer el archivo de configuracion!");
         return;
     }
 
@@ -97,7 +97,7 @@ void MainWindow::initUpdate(){
 void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 
     if(latestVersion > mainAppInfo.getVersion()){
-        serverManager->sendLog("LOG: Iniciando descarga de la versión: " + latestVersion);
+        serverManager->sendLog("LOG: Iniciando descarga de la version: " + QString::number(latestVersion));
         serverManager->downloadNewVersion();
         mainAppInfo.setVersion(latestVersion);
     }
@@ -160,11 +160,11 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
         }
 
         updateLocalVersion();
-        serverManager->sendLog("LOG: Instalación de archivos finalizada correctamente!");
+        serverManager->sendLog("LOG: Instalacion de archivos finalizada correctamente!");
 
     } else {
-        serverManager->sendLog("LOG: Archivo enviado no válido!");
-        showErrorMessage("Archivo recibido del servidor no válido!");
+        serverManager->sendLog("LOG: Archivo enviado no valido!");
+        showErrorMessage("Archivo recibido del servidor no valido!");
     }
 
 }
@@ -175,8 +175,8 @@ void MainWindow::updateLocalVersion(){
     QByteArray data = fileManager->readFile(updaterConfigPath);
 
     if(data.isEmpty()){
-        serverManager->sendLog("No se pudo actualizar la versión local!");
-        showErrorMessage("Error al leer el archivo de configuración para actualizar versión local. Nueva versión: " + QString::number(mainAppInfo.getVersion()));
+        serverManager->sendLog("No se pudo actualizar la version local!");
+        showErrorMessage("Error al leer el archivo de configuracion para actualizar version local. Nueva version: " + QString::number(mainAppInfo.getVersion()));
         return;
     }
 
