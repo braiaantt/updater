@@ -13,7 +13,7 @@ public:
 
     void getLatestVersion();
     void downloadNewVersion();
-    void sendLog(QString &log);
+    void sendLog(const QString &log);
 
     //setters
     void setHostName(QString& hostName);
