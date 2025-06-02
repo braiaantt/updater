@@ -34,7 +34,7 @@ void MainWindow::readUpdaterConfigFile(){
     QByteArray fileBytes = fileManager->readFile(updaterConfigPath);
 
     if(fileBytes.isEmpty() || !fileManager->jsonIsValid(fileBytes)){
-        showErrorMessage("Error al leer el archivo de configuracion!");
+        showErrorMessageAndQuit("Error al leer el archivo de configuracion!");
         return;
     }
 
@@ -84,7 +84,7 @@ void MainWindow::connectSignals(){
 
     connect(serverManager, &ServerManager::latestVersionReceived, this, &MainWindow::latestAppVersionRequestFinished);
     connect(serverManager, &ServerManager::downloadFinished, this, &MainWindow::downloadNewUpdateRequestFinished);
-    connect(serverManager, &ServerManager::errorHasOcurred, this, &MainWindow::showErrorMessage);
+    connect(serverManager, &ServerManager::errorHasOcurred, this, &MainWindow::showErrorMessageAndQuit);
 
 }
 
@@ -241,11 +241,11 @@ void MainWindow::quitUpdater(const QString &message){
             QCoreApplication::quit();
 
         }
-        ui->label->setText(message + "\nCerrando en " + QString::number(secsToQuit));
+        ui->labelLogs->setText(message + "\nCerrando en " + QString::number(secsToQuit));
         secsToQuit--;
     });
 
-    ui->label->setText(message + "\nCerrando en " + QString::number(secsToQuit));
+    ui->labelLogs->setText(message + "\nCerrando en " + QString::number(secsToQuit));
     quitTimer->start();
 
 }
