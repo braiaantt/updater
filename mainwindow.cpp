@@ -91,6 +91,7 @@ void MainWindow::connectSignals(){
 void MainWindow::initUpdate(){
 
     serverManager->getLatestVersion();
+    ui->labelLogs->setText("Obteniendo última versión");
 
 }
 
@@ -98,6 +99,7 @@ void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 
     if(latestVersion > mainAppInfo.getVersion()){
         serverManager->sendLog("LOG: Iniciando descarga de la version: " + QString::number(latestVersion));
+        ui->labelLogs->setText("Descargando nueva versión...");
         serverManager->downloadNewVersion();
         mainAppInfo.setVersion(latestVersion);
     }
@@ -111,17 +113,19 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
 
     if(fileName.endsWith(".exe")){
         serverManager->sendLog("LOG: Instalando ejecutable...");
+        ui->labelLogs->setText("Instalando actualización...");
         QString filePath = appDirPath + "/" + fileName;
         if (!fileManager->replaceOrCreateFile(filePath, data)){
             serverManager->sendLog("LOG: Hubo un error al instalar el ejecutable!");
             showErrorMessage("Error al crear o copiar el archivo: " + fileName);
         } else{
             updateLocalVersion();
-            serverManager->sendLog("LOG: Instalación finalizada correctamente!");
+            serverManager->sendLog("LOG: Instalacion finalizada correctamente!");
         }
 
     } else if(fileName.endsWith(".zip")){
         serverManager->sendLog("LOG: Instalando zip...");
+        ui->labelLogs->setText("Instalando archivos...");
         QString tempUpdateFolder = appDirPath + "/" + tempFolderName;
         QString zipFilePath = tempUpdateFolder + "/" + fileName;
 
@@ -159,8 +163,8 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
             return;
         }
 
-        updateLocalVersion();
         serverManager->sendLog("LOG: Instalacion de archivos finalizada correctamente!");
+        updateLocalVersion();
 
     } else {
         serverManager->sendLog("LOG: Archivo enviado no valido!");
