@@ -50,7 +50,7 @@ private:
     void downloadNewUpdate(QString&);
     void updateLocalVersion();
     void initLoadingItem();
-    void quitUpdater();
+    void quitUpdater(const QString &text);
 
 };
 #endif // MAINWINDOW_H
