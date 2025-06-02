@@ -97,6 +97,7 @@ void MainWindow::initUpdate(){
 void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 
     if(latestVersion > mainAppInfo.getVersion()){
+        serverManager->sendLog("LOG: Iniciando descarga de la versión: " + latestVersion);
         serverManager->downloadNewVersion();
         mainAppInfo.setVersion(latestVersion);
     }
@@ -106,18 +107,21 @@ void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray data){
 
     QString appDirPath = QCoreApplication::applicationDirPath();
+    serverManager->sendLog("LOG: Descarga finalizada correctamente");
 
     if(fileName.endsWith(".exe")){
-
+        serverManager->sendLog("LOG: Instalando ejecutable...");
         QString filePath = appDirPath + "/" + fileName;
         if (!fileManager->replaceOrCreateFile(filePath, data)){
+            serverManager->sendLog("LOG: Hubo un error al instalar el ejecutable!");
             showErrorMessage("Error al crear o copiar el archivo: " + fileName);
         } else{
             updateLocalVersion();
+            serverManager->sendLog("LOG: Instalación finalizada correctamente!");
         }
 
     } else if(fileName.endsWith(".zip")){
-
+        serverManager->sendLog("LOG: Instalando zip...");
         QString tempUpdateFolder = appDirPath + "/" + tempFolderName;
         QString zipFilePath = tempUpdateFolder + "/" + fileName;
 
@@ -126,7 +130,9 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
            !fileManager->descompressZipFile(zipFilePath, tempUpdateFolder))
         {
             QStringList errors = fileManager->getErrorCopyFiles();
-            showErrorMessage(errors.join("\n"));
+            QString message = errors.join("\n");
+            serverManager->sendLog(message);
+            showErrorMessage(message);
             return;
         }
 
@@ -147,13 +153,17 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
 
         if(!fileManager->deleteRecursively(tempUpdateFolder)){
             QStringList errors = fileManager->getErrorCopyFiles();
-            showErrorMessage("Error al instalar los siguientes archivos:\n" + errors.join("\n"));
+            QString message = "Error al instalar los siguientes archivos:\n" + errors.join("\n");
+            serverManager->sendLog("LOG:" + message);
+            showErrorMessage(message);
             return;
         }
 
         updateLocalVersion();
+        serverManager->sendLog("LOG: Instalación de archivos finalizada correctamente!");
 
     } else {
+        serverManager->sendLog("LOG: Archivo enviado no válido!");
         showErrorMessage("Archivo recibido del servidor no válido!");
     }
 
@@ -165,6 +175,7 @@ void MainWindow::updateLocalVersion(){
     QByteArray data = fileManager->readFile(updaterConfigPath);
 
     if(data.isEmpty()){
+        serverManager->sendLog("No se pudo actualizar la versión local!");
         showErrorMessage("Error al leer el archivo de configuración para actualizar versión local. Nueva versión: " + QString::number(mainAppInfo.getVersion()));
         return;
     }
