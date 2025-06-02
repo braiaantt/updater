@@ -14,7 +14,7 @@ ServerManager::ServerManager(QObject *parent) :
 
 void ServerManager::getLatestVersion(){
 
-    QUrl url(hostName + "/" +getLatestVersionRoute);
+    QUrl url(hostName +getLatestVersionRoute);
     QNetworkRequest request(url);
     QNetworkReply *reply = networkManager->get(request);
 
@@ -24,7 +24,7 @@ void ServerManager::getLatestVersion(){
 
 void ServerManager::downloadNewVersion(){
 
-    QUrl url(hostName + "/" + getLatestVersionRoute);
+    QUrl url(hostName + downloadVersionRoute);
     QNetworkRequest request(url);
     QNetworkReply *reply = networkManager->get(request);
 
@@ -32,14 +32,18 @@ void ServerManager::downloadNewVersion(){
 
 }
 
-void ServerManager::sendLog(QString &log){
+void ServerManager::sendLog(const QString &log){
 
-    QByteArray postData = log.toUtf8();
-    QUrl url(hostName + "/" + sendLogRoute);
+    QJsonObject json;
+    json["message"] = log;
+    QJsonDocument doc(json);
+    QByteArray jsonData = doc.toJson();
+
+    QUrl url(hostName + sendLogRoute);
     QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    QNetworkReply *reply = networkManager->post(request, postData);
+    QNetworkReply *reply = networkManager->post(request, jsonData);
 
     connect(reply, &QNetworkReply::finished, this, &ServerManager::sendLogRequestFinished);
 
