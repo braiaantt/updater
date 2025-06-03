@@ -223,28 +223,6 @@ void MainWindow::on_pushButtonCancel_clicked()
 
 }
 
-void MainWindow::quitUpdater(const QString &message){
-
-    QTimer *quitTimer = new QTimer(this);
-    quitTimer->setInterval(1000);
-
-    connect(quitTimer, &QTimer::timeout, this, [=]{
-
-        if(secsToQuit == 0){
-
-            quitTimer->stop();
-            QCoreApplication::quit();
-
-        }
-        ui->labelLogs->setText(message + "\nCerrando en " + QString::number(secsToQuit));
-        secsToQuit--;
-    });
-
-    ui->labelLogs->setText(message + "\nCerrando en " + QString::number(secsToQuit));
-    quitTimer->start();
-
-}
-
 void MainWindow::showErrorMessageAndQuit(const QString &errorMessage){
 
     QMessageBox::warning(this,"Error",errorMessage);
