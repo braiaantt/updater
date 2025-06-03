@@ -91,7 +91,7 @@ void MainWindow::connectSignals(){
 void MainWindow::initUpdate(){
 
     serverManager->getLatestVersion();
-    ui->labelLogs->setText("Obteniendo última versión");
+    updateLabelLogs("Obteniendo última versión");
 
 }
 
@@ -99,7 +99,7 @@ void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 
     if(latestVersion > mainAppInfo.getVersion()){
         serverManager->sendLog("LOG: Iniciando descarga de la version: " + QString::number(latestVersion));
-        ui->labelLogs->setText("Descargando nueva versión...");
+        updateLabelLogs("Descargando nueva versión...");
         serverManager->downloadNewVersion();
         mainAppInfo.setVersion(latestVersion);
     }
@@ -112,20 +112,22 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
     serverManager->sendLog("LOG: Descarga finalizada correctamente");
 
     if(fileName.endsWith(".exe")){
+
         serverManager->sendLog("LOG: Instalando ejecutable...");
-        ui->labelLogs->setText("Instalando actualización...");
+        updateLabelLogs("Instalando actualización...");
+
         QString filePath = appDirPath + "/" + fileName;
         if (!fileManager->replaceOrCreateFile(filePath, data)){
-            serverManager->sendLog("LOG: Hubo un error al instalar el ejecutable!");
+            serverManager->sendLog("LOG: Error al crear o copiar el archivo: " + fileName);
             showErrorMessageAndQuit("Error al crear o copiar el archivo: " + fileName);
-        } else{
-            updateLocalVersion();
-            serverManager->sendLog("LOG: Instalacion finalizada correctamente!");
+            return;
         }
 
     } else if(fileName.endsWith(".zip")){
+
         serverManager->sendLog("LOG: Instalando zip...");
-        ui->labelLogs->setText("Instalando archivos...");
+        updateLabelLogs("Instalando archivos...");
+
         QString tempUpdateFolder = appDirPath + "/" + tempFolderName;
         QString zipFilePath = tempUpdateFolder + "/" + fileName;
 
@@ -163,15 +165,16 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
             return;
         }
 
-        serverManager->sendLog("LOG: Instalacion de archivos finalizada correctamente!");
-        updateLocalVersion();
 
     } else {
         serverManager->sendLog("LOG: Archivo enviado no valido!");
         showErrorMessageAndQuit("Archivo recibido del servidor no valido!");
+        return;
     }
 
-    quitUpdater("Instalacion finalizada correctamente!");
+    serverManager->sendLog("LOG: Instalacion finalizada correctamente!");
+    updateLocalVersion();
+    quitAppTimer->startContdown();
 
 }
 
@@ -219,6 +222,7 @@ void MainWindow::initLoadingItem(){
 void MainWindow::on_pushButtonCancel_clicked()
 {
 
+    //serverManager->cancelCurrentRequest();
     quitAppTimer->startContdown();
 
 }
@@ -226,7 +230,18 @@ void MainWindow::on_pushButtonCancel_clicked()
 void MainWindow::showErrorMessageAndQuit(const QString &errorMessage){
 
     QMessageBox::warning(this,"Error",errorMessage);
+    quitAppTimer->startContdown();
 
-    quitUpdater("");
+}
+
+void MainWindow::updateLabelLogs(const QString& message){
+
+    ui->labelLogs->setText(message);
+
+}
+
+void MainWindow::timerFinished(){
+
+    QCoreApplication::quit();
 
 }
