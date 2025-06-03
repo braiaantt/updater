@@ -12,6 +12,9 @@ signals:
 
 public:
     explicit QuitTimer(QObject *parent = nullptr);
+
+private:
+    int secsToQuit;
 };
 
 #endif // QUITTIMER_H
