@@ -8,4 +8,11 @@ QuitTimer::QuitTimer(QObject *parent) :
     this->setInterval(1000);
 }
 
+void QuitTimer::startContdown(){
+
+    updateLabelAndSecs();
+    this->start();
+
+}
+
 
