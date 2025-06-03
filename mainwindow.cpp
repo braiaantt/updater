@@ -9,7 +9,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , scene(new QGraphicsScene(this)), rotationTimer(new QTimer(this)), spinner(new LoadingItem())
+    , scene(new QGraphicsScene(this)), rotationTimer(new QTimer(this)), spinner(new LoadingItem()), quitAppTimer(new QuitTimer(this))
     , secsToQuit(4), tempFolderName("tempUpdate")
 
 {
