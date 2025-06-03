@@ -6,6 +6,7 @@
 #include "servermanager.h"
 #include "mainappinfo.h"
 #include "loadingitem.h"
+#include "quittimer.h"
 #include <QGraphicsScene>
 #include <QTimer>
 
@@ -34,6 +35,7 @@ private:
     Ui::MainWindow *ui;
     FileManager *fileManager;
     ServerManager *serverManager;
+    QuitTimer *quitAppTimer;
     MainAppInfo mainAppInfo;
     QString tempFolderName;
     QGraphicsScene *scene;
