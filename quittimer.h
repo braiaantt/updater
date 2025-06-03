@@ -10,6 +10,9 @@ signals:
     void updateLabel(const QString &);
     void timerFinished();
 
+public slots:
+    void updateLabelAndSecs();
+
 public:
     explicit QuitTimer(QObject *parent = nullptr);
     void startContdown();
