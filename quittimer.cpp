@@ -15,4 +15,18 @@ void QuitTimer::startContdown(){
 
 }
 
+void QuitTimer::updateLabelAndSecs(){
 
+    if(secsToQuit == 0){
+
+        this->stop();
+        emit timerFinished();
+
+    } else {
+
+        emit updateLabel("Cerrando app en..." + QString::number(secsToQuit));
+        secsToQuit--;
+
+    }
+
+}
