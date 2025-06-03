@@ -12,6 +12,7 @@ signals:
 
 public:
     explicit QuitTimer(QObject *parent = nullptr);
+    void startContdown();
 
 private:
     int secsToQuit;
