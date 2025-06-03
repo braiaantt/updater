@@ -28,6 +28,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         servermanager.h servermanager.cpp
         filemanager.h filemanager.cpp
         mainappinfo.h mainappinfo.cpp
+        quittimer.h quittimer.cpp
 
     )
 # Define target properties for Android with Qt 6 as:
