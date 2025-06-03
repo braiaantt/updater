@@ -6,8 +6,12 @@
 
 class QuitTimer : public QTimer {
     Q_OBJECT
+signals:
+    void updateLabel(const QString &);
+    void timerFinished();
+
 public:
-    explicit QuitTimer(QParent *parent = nullptr);
+    explicit QuitTimer(QObject *parent = nullptr);
 };
 
 #endif // QUITTIMER_H
