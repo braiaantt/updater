@@ -219,12 +219,7 @@ void MainWindow::initLoadingItem(){
 void MainWindow::on_pushButtonCancel_clicked()
 {
 
-    /*if(currentReply && currentReply->isRunning()){
-        currentReply->abort();
-        quitUpdater();
-        ui->pushButtonCancel->setEnabled(false);
-
-    }*/
+    quitAppTimer->startContdown();
 
 }
 
