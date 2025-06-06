@@ -144,6 +144,17 @@ void ServerManager::sendLogRequestFinished(){
 
 }
 
+bool ServerManager::replyHasError(const QNetworkReply::NetworkError &error){
+
+    if(error == QNetworkReply::OperationCanceledError){
+        cancelRequests();
+        return true;
+    }
+
+    return false;
+
+}
+
 //setters
 void ServerManager::setHostName(QString &_hostName){
     hostName = _hostName;
