@@ -3,7 +3,6 @@
 #include <QNetworkRequest>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QNetworkReply>
 
 ServerManager::ServerManager(QObject *parent) :
     QObject(parent)
