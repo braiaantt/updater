@@ -38,6 +38,7 @@ private:
     void getLatestVersionRequestFinished();
     void downloadNewVersionRequestFinished();
     void sendLogRequestFinished();
+    bool replyHasError(const QNetworkReply::NetworkError &error);
 };
 
 #endif // SERVERMANAGER_H
