@@ -155,6 +155,16 @@ bool ServerManager::replyHasError(const QNetworkReply::NetworkError &error){
 
 }
 
+void ServerManager::cancelRequests(){
+
+    for (QSet<QNetworkReply*>::const_iterator it = runningRequests.constBegin(); it != runningRequests.constEnd(); ++it) {
+        QNetworkReply *reply = *it;
+        if (reply && reply->isRunning())
+            reply->abort();
+    }
+
+}
+
 //setters
 void ServerManager::setHostName(QString &_hostName){
     hostName = _hostName;
