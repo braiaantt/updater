@@ -19,6 +19,8 @@ void ServerManager::getLatestVersion(){
 
     connect(reply, &QNetworkReply::finished, this, &ServerManager::getLatestVersionRequestFinished);
 
+    runningRequests.insert(reply);
+
 }
 
 void ServerManager::downloadNewVersion(){
@@ -28,6 +30,8 @@ void ServerManager::downloadNewVersion(){
     QNetworkReply *reply = networkManager->get(request);
 
     connect(reply, &QNetworkReply::finished, this, &ServerManager::downloadNewVersionRequestFinished);
+
+    runningRequests.insert(reply);
 
 }
 
@@ -45,6 +49,8 @@ void ServerManager::sendLog(const QString &log){
     QNetworkReply *reply = networkManager->post(request, jsonData);
 
     connect(reply, &QNetworkReply::finished, this, &ServerManager::sendLogRequestFinished);
+
+    runningRequests.insert(reply);
 
 }
 
