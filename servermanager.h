@@ -25,6 +25,7 @@ signals:
     void latestVersionReceived(double latestVersion);
     void downloadFinished(QString fileName, QByteArray data);
     void errorHasOcurred(QString error);
+    void readyToQuit();
 
 private:
     QString hostName;
