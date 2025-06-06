@@ -38,7 +38,7 @@ private:
     void getLatestVersionRequestFinished();
     void downloadNewVersionRequestFinished();
     void sendLogRequestFinished();
-    bool replyHasError(const QNetworkReply::NetworkError &error);
+    bool replyHasError(QNetworkReply *);
     void cancelRequests();
 };
 
