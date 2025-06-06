@@ -33,7 +33,7 @@ private:
     QString sendLogRoute;
 
     QNetworkAccessManager *networkManager;
-    QSet<QNetworkReply> runningRequests;
+    QSet<QNetworkReply*> runningRequests;
 
     void getLatestVersionRequestFinished();
     void downloadNewVersionRequestFinished();
