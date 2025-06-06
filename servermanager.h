@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 class ServerManager : public QObject
 {
@@ -32,6 +33,7 @@ private:
     QString sendLogRoute;
 
     QNetworkAccessManager *networkManager;
+    QSet<QNetworkReply> runningRequests;
 
     void getLatestVersionRequestFinished();
     void downloadNewVersionRequestFinished();
