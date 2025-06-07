@@ -10,13 +10,12 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , scene(new QGraphicsScene(this)), rotationTimer(new QTimer(this)), spinner(new LoadingItem()), quitAppTimer(new QuitTimer(this))
-    , secsToQuit(4), tempFolderName("tempUpdate")
+    , fileManager(new FileManager(this)), serverManager(new ServerManager(this)), secsToQuit(4), tempFolderName("tempUpdate")
 
 {
     ui->setupUi(this);
 
     QTimer::singleShot(0, this, [this]{
-        initFileManager();
         readUpdaterConfigFile();
         initLoadingItem();
     });
@@ -62,8 +61,6 @@ void MainWindow::initMainAppInfo(QJsonObject &mainAppInfoObj){
 
 void MainWindow::initServerManager(QJsonObject &serverInfoObj){
 
-    serverManager = new ServerManager(this);
-
     QString hostName = serverInfoObj["hostName"].toString();
     QString getLatestVersionRoute = serverInfoObj["getLatestVersionRoute"].toString();
     QString downloadVersionRoute = serverInfoObj["downloadVersionRoute"].toString();
@@ -74,10 +71,6 @@ void MainWindow::initServerManager(QJsonObject &serverInfoObj){
     serverManager->setDownloadVersionRoute(downloadVersionRoute);
     serverManager->setSendLogRoute(sendLogRoute);
 
-}
-
-void MainWindow::initFileManager(){
-    fileManager = new FileManager(this);
 }
 
 void MainWindow::connectSignals(){
