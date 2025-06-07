@@ -226,6 +226,7 @@ void MainWindow::on_pushButtonCancel_clicked()
 {
 
     serverManager->cancelRequests();
+    ui->labelLogs->setText("Cancelando...");
 
 }
 
