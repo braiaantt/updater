@@ -15,6 +15,7 @@ public:
     void getLatestVersion();
     void downloadNewVersion();
     void sendLog(const QString &log);
+    void cancelRequests();
 
     //setters
     void setHostName(QString& hostName);
@@ -40,7 +41,6 @@ private:
     void downloadNewVersionRequestFinished();
     void sendLogRequestFinished();
     bool replyHasError(QNetworkReply *);
-    void cancelRequests();
 };
 
 #endif // SERVERMANAGER_H
