@@ -87,7 +87,7 @@ void MainWindow::connectSignals(){
 void MainWindow::initUpdate(){
 
     serverManager->getLatestVersion();
-    updateLabelLogs("Obteniendo última versión");
+    updateLabelLogs("Obteniendo última versión...");
 
 }
 
