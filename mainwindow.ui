@@ -122,7 +122,7 @@ border: none;
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">#label{
+             <string notr="true">#labelLogs{
 color:white;
 }</string>
             </property>
