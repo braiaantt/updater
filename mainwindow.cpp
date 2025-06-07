@@ -87,6 +87,7 @@ void MainWindow::connectSignals(){
     connect(serverManager, &ServerManager::errorHasOcurred, this, &MainWindow::showErrorMessageAndQuit);
     connect(quitAppTimer, &QuitTimer::updateLabel, this, &MainWindow::updateLabelLogs);
     connect(quitAppTimer, &QuitTimer::timerFinished, this, &MainWindow::timerFinished);
+    connect(serverManager, &ServerManager::readyToQuit, quitAppTimer, &QuitTimer::startContdown);
 
 }
 
@@ -224,8 +225,7 @@ void MainWindow::initLoadingItem(){
 void MainWindow::on_pushButtonCancel_clicked()
 {
 
-    //serverManager->cancelCurrentRequest();
-    quitAppTimer->startContdown();
+    serverManager->cancelRequests();
 
 }
 
