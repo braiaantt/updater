@@ -58,8 +58,7 @@ void ServerManager::getLatestVersionRequestFinished(){
 
     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
 
-    if(reply->error() != QNetworkReply::NoError){
-        emit errorHasOcurred(reply->errorString());
+    if(replyHasError(reply)){
         reply->deleteLater();
         return;
     }
@@ -92,8 +91,7 @@ void ServerManager::downloadNewVersionRequestFinished(){
 
     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
 
-    if(reply->error() != QNetworkReply::NoError){
-        emit errorHasOcurred(reply->errorString());
+    if(replyHasError(reply)){
         reply->deleteLater();
         return;
     }
@@ -136,18 +134,26 @@ void ServerManager::sendLogRequestFinished(){
 
     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
 
-    if(reply->error() != QNetworkReply::NoError){
-        qDebug()<<"Error en la solicitud de log";
-    }
+    replyHasError(reply);
 
     reply->deleteLater();
 
 }
 
-bool ServerManager::replyHasError(const QNetworkReply::NetworkError &error){
+bool ServerManager::replyHasError(QNetworkReply *reply){
 
-    if(error == QNetworkReply::OperationCanceledError){
-        cancelRequests();
+    if(reply->error() == QNetworkReply::OperationCanceledError){
+
+        runningRequests.remove(reply);
+
+        if(runningRequests.isEmpty()){
+            emit readyToQuit();
+        }
+        return true;
+    }
+
+    if(reply->error() != QNetworkReply::NoError){
+        emit errorHasOcurred(reply->errorString());
         return true;
     }
 
