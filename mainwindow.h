@@ -48,7 +48,6 @@ private:
     void readUpdaterConfigFile();
     void initMainAppInfo(QJsonObject &mainAppInfoObj);
     void initServerManager(QJsonObject &serverInfoObj);
-    void initFileManager();
     void connectSignals();
     void initUpdate();
     void downloadNewUpdate(QString&);
