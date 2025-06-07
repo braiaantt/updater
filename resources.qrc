@@ -1,2 +1,6 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/">
+        <file>resources/checked-success-svgrepo-com.svg</file>
+        <file>resources/error-svgrepo-com.svg</file>
+    </qresource>
+</RCC>
