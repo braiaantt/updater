@@ -94,6 +94,8 @@ void MainWindow::initUpdate(){
 
 void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 
+    ui->pushButtonCancel->setEnabled(false);
+
     if(latestVersion > mainAppInfo.getVersion()){
         serverManager->sendLog("LOG: Iniciando descarga de la version: " + QString::number(latestVersion));
         updateLabelLogs("Descargando nueva versión...");
@@ -263,6 +265,7 @@ void MainWindow::initLoadingItem(){
 void MainWindow::on_pushButtonCancel_clicked()
 {
 
+    ui->pushButtonCancel->setEnabled(false);
     serverManager->cancelRequests();
     ui->labelLogs->setText("Cancelando...");
 
