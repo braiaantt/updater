@@ -76,7 +76,7 @@ bool FileManager::deleteRecursively(const QString &dir){
 
 void FileManager::descompressZipFile(const QString &zipFilePath, const QString &destinationPath){
 
-    QtConcurrent::run([=](){
+    QFuture<void> future = QtConcurrent::run([=](){
 
         QStringList command = QStringList()
                               << "Expand-Archive"
@@ -85,7 +85,9 @@ void FileManager::descompressZipFile(const QString &zipFilePath, const QString &
 
         int exitCode = QProcess::execute("powershell", command);
 
-        emit descompressFinished(exitCode);
+        QMetaObject::invokeMethod(this, [this, exitCode]() {
+                emit descompressFinished(exitCode);
+            }, Qt::QueuedConnection);
 
     });
 
