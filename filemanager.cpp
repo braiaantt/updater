@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QProcess>
 #include <QJsonDocument>
+#include <QtConcurrent/QtConcurrent>
 
 FileManager::FileManager(QObject *parent) :
     QObject(parent)
@@ -73,19 +74,20 @@ bool FileManager::deleteRecursively(const QString &dir){
     return true;
 }
 
-bool FileManager::descompressZipFile(const QString &zipFilePath, const QString &destinationPath){
+void FileManager::descompressZipFile(const QString &zipFilePath, const QString &destinationPath){
 
-    QStringList command = QStringList()
-                          << "Expand-Archive"
-                          << "-Path" << "\"" + zipFilePath +"\""
-                          << "-DestinationPath" << "\"" + destinationPath + "\"";
+    QtConcurrent::run([=](){
 
-    int exitCode = QProcess::execute("powershell", command);
+        QStringList command = QStringList()
+                              << "Expand-Archive"
+                              << "-Path" << "\"" + zipFilePath +"\""
+                              << "-DestinationPath" << "\"" + destinationPath + "\"";
 
-    if(exitCode == 0) return true;
+        int exitCode = QProcess::execute("powershell", command);
 
-    errorCopyFiles << "Error al descomprimir el archivo zip!";
-    return false;
+        emit descompressFinished(exitCode);
+
+    });
 
 }
 
