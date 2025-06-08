@@ -273,6 +273,8 @@ void MainWindow::on_pushButtonCancel_clicked()
 
 void MainWindow::showErrorMessageAndQuit(const QString &errorMessage){
 
+    ui->pushButtonCancel->setEnabled(false);
+
     QPixmap pixmap(":/resources/error-svgrepo-com.svg");
     ui->labelShowResult->setPixmap(pixmap);
     ui->labelUpdateState->setText("Error en la actualización");
