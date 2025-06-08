@@ -52,6 +52,8 @@ private:
     void connectSignals();
     void initUpdate();
     void downloadNewUpdate(QString&);
+    void installExe(const QString &fileName, const QByteArray &data);
+    void installZip(const QString &fileName, const QByteArray &data);
     void updateLocalVersion();
     void updateFinishedSuccessfully(const QString &text);
     void initLoadingItem();
