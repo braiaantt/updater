@@ -25,7 +25,7 @@ public:
     const QStringList& getErrorCopyFiles();
 
 signals:
-    void descompressFinished(bool exitCode);
+    void descompressFinished(int exitCode);
 private:
     QStringList errorCopyFiles;
 };
