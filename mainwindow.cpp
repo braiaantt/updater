@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , scene(new QGraphicsScene(this)), rotationTimer(new QTimer(this)), spinner(new LoadingItem()), quitAppTimer(new QuitTimer(this))
-    , fileManager(new FileManager(this)), serverManager(new ServerManager(this)), tempFolderName("tempUpdate")
+    , fileManager(new FileManager(this)), serverManager(new ServerManager(this)), tempFolderName("tempUpdate"), updateCancelled(false)
 
 {
     ui->setupUi(this);
@@ -304,8 +304,14 @@ void MainWindow::updateLabelLogs(const QString& message){
 
 }
 
-void MainWindow::timerFinished(){
+void MainWindow::timerFinished() {
+
+    QString mainAppPath = QCoreApplication::applicationDirPath() + QDir::separator() + mainAppInfo.getFileName();
+
+    if (!fileManager->startApp(mainAppPath)) {
+        QMessageBox::critical(this,"Error","Error al iniciar la aplicación principal!");
+    }
 
     QCoreApplication::quit();
-
 }
+
