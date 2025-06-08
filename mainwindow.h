@@ -45,6 +45,7 @@ private:
     LoadingItem *spinner;
     QTimer *rotationTimer;
     int secsToQuit;
+    bool updateCancelled;
 
     void readUpdaterConfigFile();
     void initMainAppInfo(QJsonObject &mainAppInfoObj);
