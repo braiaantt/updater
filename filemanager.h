@@ -23,6 +23,9 @@ public:
 
     //getters
     const QStringList& getErrorCopyFiles();
+
+signals:
+    void descompressFinished(const bool &exitCode);
 private:
     QStringList errorCopyFiles;
 };
