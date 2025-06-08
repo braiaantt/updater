@@ -106,63 +106,15 @@ void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 
 void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray data){
 
-    QString appDirPath = QCoreApplication::applicationDirPath();    
     serverManager->sendLog("LOG: Descarga finalizada correctamente");
 
     if(fileName.endsWith(".exe")){
 
-        serverManager->sendLog("LOG: Instalando ejecutable...");
-        updateLabelLogs("Instalando actualización...");
-
-        QString filePath = appDirPath + "/" + fileName;
-        if (!fileManager->replaceOrCreateFile(filePath, data)){
-            serverManager->sendLog("LOG: Error al crear o copiar el archivo: " + fileName);
-            showErrorMessageAndQuit("Error al crear o copiar el archivo: " + fileName);
-            return;
-        }
+        installExe(fileName, data);
 
     } else if(fileName.endsWith(".zip")){
 
-        serverManager->sendLog("LOG: Instalando zip...");
-        updateLabelLogs("Instalando archivos...");
-
-        QString tempUpdateFolder = appDirPath + "/" + tempFolderName;
-        QString zipFilePath = tempUpdateFolder + "/" + fileName;
-
-        if(!fileManager->createFolder(tempUpdateFolder) ||
-           !fileManager->replaceOrCreateFile(zipFilePath, data) ||
-           !fileManager->descompressZipFile(zipFilePath, tempUpdateFolder))
-        {
-            QStringList errors = fileManager->getErrorCopyFiles();
-            QString message = errors.join("\n");
-            serverManager->sendLog(message);
-            showErrorMessageAndQuit(message);
-            return;
-        }
-
-        QFileInfoList entries = fileManager->getDirEntries(tempUpdateFolder);
-
-        for(const QFileInfo &entry : entries){
-            if(entry.fileName() != fileName){
-
-                if(!fileManager->searchFile(appDirPath, entry)){
-
-                    QString target = appDirPath + "/" + fileName;
-                    fileManager->copyFile(entry.absoluteFilePath(), target);
-
-                }
-
-            }
-        }
-
-        if(!fileManager->deleteRecursively(tempUpdateFolder)){
-            QStringList errors = fileManager->getErrorCopyFiles();
-            QString message = "Error al instalar los siguientes archivos:\n" + errors.join("\n");
-            serverManager->sendLog("LOG:" + message);
-            showErrorMessageAndQuit(message);
-            return;
-        }
-
+        installZip(fileName, data);
 
     } else {
         serverManager->sendLog("LOG: Archivo enviado no valido!");
@@ -170,8 +122,48 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
         return;
     }
 
+}
+
+void MainWindow::installExe(const QString &fileName, const QByteArray &data){
+
+    QString appDirPath = QCoreApplication::applicationDirPath();
+
+    serverManager->sendLog("LOG: Instalando ejecutable...");
+    updateLabelLogs("Instalando actualización...");
+
+    QString filePath = appDirPath + "/" + fileName;
+    if (!fileManager->replaceOrCreateFile(filePath, data)){
+        serverManager->sendLog("LOG: Error al crear o copiar el archivo: " + fileName);
+        showErrorMessageAndQuit("Error al crear o copiar el archivo: " + fileName);
+        return;
+    }
+
     updateLocalVersion();
     updateFinishedSuccessfully("Instalación finalizada correctamente!");
+
+}
+
+void MainWindow::installZip(const QString &fileName, const QByteArray &data){
+
+
+    serverManager->sendLog("LOG: Instalando zip...");
+    updateLabelLogs("Instalando archivos...");
+
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    QString tempUpdateFolder = appDirPath + "/" + tempFolderName;
+    QString zipFilePath = tempUpdateFolder + "/" + fileName;
+
+    if(!fileManager->createFolder(tempUpdateFolder) ||
+        !fileManager->replaceOrCreateFile(zipFilePath, data))
+    {
+        QStringList errors = fileManager->getErrorCopyFiles();
+        QString message = errors.join("\n");
+        serverManager->sendLog(message);
+        showErrorMessageAndQuit(message);
+        return;
+    }
+
+    fileManager->descompressZipFile(zipFilePath, tempUpdateFolder);
 
 }
 
@@ -206,6 +198,10 @@ void MainWindow::onDescompressFinished(int exitCode){
         return;
 
     }
+
+    updateLocalVersion();
+    updateFinishedSuccessfully("Instalación finalizada correctamente!");
+
 }
 
 void MainWindow::updateFinishedSuccessfully(const QString &text){
