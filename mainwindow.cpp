@@ -78,6 +78,7 @@ void MainWindow::connectSignals(){
     connect(serverManager, &ServerManager::latestVersionReceived, this, &MainWindow::latestAppVersionRequestFinished);
     connect(serverManager, &ServerManager::downloadFinished, this, &MainWindow::downloadNewUpdateRequestFinished);
     connect(serverManager, &ServerManager::errorHasOcurred, this, &MainWindow::showErrorMessageAndQuit);
+    connect(fileManager, &FileManager::descompressFinished, this, &MainWindow::onDescompressFinished);
     connect(quitAppTimer, &QuitTimer::updateLabel, this, &MainWindow::updateLabelLogs);
     connect(quitAppTimer, &QuitTimer::timerFinished, this, &MainWindow::timerFinished);
     connect(serverManager, &ServerManager::readyToQuit, quitAppTimer, &QuitTimer::startContdown);
