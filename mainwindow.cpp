@@ -98,22 +98,20 @@ void MainWindow::initUpdate(){
 
 void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 
-    if(updateCancelled) return;
-    ui->pushButtonCancel->setEnabled(false);
-
     if(latestVersion > mainAppInfo.getVersion()){
+
         serverManager->sendLog("LOG: Iniciando descarga de la version: " + QString::number(latestVersion));
         updateLabelLogs("Descargando nueva versión...");
+        mainAppInfo.setVersion(latestVersion);
 
         QTimer::singleShot(450, this, [=](){
+            if(updateCancelled) return;
+            ui->pushButtonCancel->setEnabled(false);
             serverManager->downloadNewVersion();
         });
-        mainAppInfo.setVersion(latestVersion);
-    } else {
 
-        QTimer::singleShot(450, this, [=](){
-            updateFinishedSuccessfully("No hay actualizaciones disponibles!");
-        });
+    } else {
+        updateFinishedSuccessfully("No hay actualizaciones disponibles!");
     }
 
 }
