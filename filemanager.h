@@ -20,7 +20,7 @@ public:
     void copyFile(const QString &source, const QString &target);
     QFileInfoList getDirEntries(const QString &dir);
     bool jsonIsValid(const QByteArray &data);
-
+    bool startApp(const QString &path);
     //getters
     const QStringList& getErrorCopyFiles();
 
