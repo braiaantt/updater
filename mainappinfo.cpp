@@ -16,10 +16,10 @@ const double& MainAppInfo::getVersion(){
 
 //setters
 
-void MainAppInfo::setFileName(QString& _fileName){
+void MainAppInfo::setFileName(const QString& _fileName){
     fileName = _fileName;
 }
 
-void MainAppInfo::setVersion(double& _version){
+void MainAppInfo::setVersion(const double& _version){
     version = _version;
 }

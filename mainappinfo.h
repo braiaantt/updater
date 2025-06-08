@@ -13,8 +13,8 @@ public:
     const QString& getFileName();
 
     //setters
-    void setVersion(double &version);
-    void setFileName(QString &fileName);
+    void setVersion(const double &version);
+    void setFileName(const QString &fileName);
 
 private:
     double version;
