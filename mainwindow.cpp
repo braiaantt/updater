@@ -98,6 +98,8 @@ void MainWindow::latestAppVersionRequestFinished(double latestVersion){
         updateLabelLogs("Descargando nueva versión...");
         serverManager->downloadNewVersion();
         mainAppInfo.setVersion(latestVersion);
+    } else {
+        updateFinishedSuccessfully("No hay actualizaciones disponibles!");
     }
 
 }
@@ -168,8 +170,20 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
         return;
     }
 
-    serverManager->sendLog("LOG: Instalacion finalizada correctamente!");
     updateLocalVersion();
+    updateFinishedSuccessfully("Instalación finalizada correctamente!");
+
+}
+
+void MainWindow::updateFinishedSuccessfully(const QString &text){
+
+    serverManager->sendLog("LOG:" + text);
+
+    QPixmap pixmap(":/resources/checked-success-svgrepo-com.svg");
+    ui->labelShowResult->setPixmap(pixmap);
+    ui->labelUpdateState->setText(text);
+    ui->stackedWidget->setCurrentIndex(1);
+
     quitAppTimer->startContdown();
 
 }
@@ -187,9 +201,10 @@ void MainWindow::updateLocalVersion(){
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
     QJsonObject jsonObj = jsonDoc.object();
+    QJsonObject mainAppInfoObj = jsonObj["mainAppInfo"].toObject();
 
-    jsonObj = jsonDoc.object();
-    jsonObj["mainAppVersion"] = mainAppInfo.getVersion();
+    mainAppInfoObj["version"] = QString::number(mainAppInfo.getVersion());
+    jsonObj["mainAppInfo"] = mainAppInfoObj;
 
     jsonDoc.setObject(jsonObj);
 
@@ -224,6 +239,10 @@ void MainWindow::on_pushButtonCancel_clicked()
 }
 
 void MainWindow::showErrorMessageAndQuit(const QString &errorMessage){
+
+    QPixmap pixmap(":/resources/error-svgrepo-com.svg");
+    ui->labelShowResult->setPixmap(pixmap);
+    ui->stackedWidget->setCurrentIndex(1);
 
     QMessageBox::warning(this,"Error",errorMessage);
     quitAppTimer->startContdown();
