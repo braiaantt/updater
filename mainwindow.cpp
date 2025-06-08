@@ -111,6 +111,7 @@ void MainWindow::latestAppVersionRequestFinished(double latestVersion){
         });
 
     } else {
+        ui->pushButtonCancel->setEnabled(false);
         updateFinishedSuccessfully("No hay actualizaciones disponibles!");
     }
 
