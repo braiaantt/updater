@@ -87,8 +87,11 @@ void MainWindow::connectSignals(){
 
 void MainWindow::initUpdate(){
 
-    serverManager->getLatestVersion();
     updateLabelLogs("Obteniendo última versión...");
+
+    QTimer::singleShot(450, this, [=](){
+        serverManager->getLatestVersion();
+    });
 
 }
 
@@ -99,40 +102,46 @@ void MainWindow::latestAppVersionRequestFinished(double latestVersion){
     if(latestVersion > mainAppInfo.getVersion()){
         serverManager->sendLog("LOG: Iniciando descarga de la version: " + QString::number(latestVersion));
         updateLabelLogs("Descargando nueva versión...");
-        serverManager->downloadNewVersion();
+
+        QTimer::singleShot(450, this, [=](){
+            serverManager->downloadNewVersion();
+        });
         mainAppInfo.setVersion(latestVersion);
     } else {
-        updateFinishedSuccessfully("No hay actualizaciones disponibles!");
+
+        QTimer::singleShot(450, this, [=](){
+            updateFinishedSuccessfully("No hay actualizaciones disponibles!");
+        });
     }
 
 }
 
 void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray data){
 
-    serverManager->sendLog("LOG: Descarga finalizada correctamente");
+    serverManager->sendLog("LOG: Descarga finalizada correctamente. Instalando...");
+    updateLabelLogs("Descarga finalizada. Instalando...");
 
-    if(fileName.endsWith(".exe")){
+    QTimer::singleShot(450, this, [=](){
+        if(fileName.endsWith(".exe")){
 
-        installExe(fileName, data);
+            installExe(fileName, data);
 
-    } else if(fileName.endsWith(".zip")){
+        } else if(fileName.endsWith(".zip")){
 
-        installZip(fileName, data);
+            installZip(fileName, data);
 
-    } else {
-        serverManager->sendLog("LOG: Archivo enviado no valido!");
-        showErrorMessageAndQuit("Archivo recibido del servidor no valido!");
-        return;
-    }
+        } else {
+            serverManager->sendLog("LOG: Archivo enviado no valido!");
+            showErrorMessageAndQuit("Archivo recibido del servidor no valido!");
+            return;
+        }
+    });
 
 }
 
 void MainWindow::installExe(const QString &fileName, const QByteArray &data){
 
     QString appDirPath = QCoreApplication::applicationDirPath();
-
-    serverManager->sendLog("LOG: Instalando ejecutable...");
-    updateLabelLogs("Instalando actualización...");
 
     QString filePath = appDirPath + "/" + fileName;
     if (!fileManager->replaceOrCreateFile(filePath, data)){
@@ -142,15 +151,14 @@ void MainWindow::installExe(const QString &fileName, const QByteArray &data){
     }
 
     updateLocalVersion();
-    updateFinishedSuccessfully("Instalación finalizada correctamente!");
+
+    QTimer::singleShot(450, this, [=](){
+        updateFinishedSuccessfully("Instalación finalizada correctamente!");
+    });
 
 }
 
 void MainWindow::installZip(const QString &fileName, const QByteArray &data){
-
-
-    serverManager->sendLog("LOG: Instalando zip...");
-    updateLabelLogs("Instalando archivos...");
 
     QString appDirPath = QCoreApplication::applicationDirPath();
     QString tempUpdateFolder = appDirPath + "/" + tempFolderName;
@@ -203,7 +211,9 @@ void MainWindow::onDescompressFinished(int exitCode){
     }
 
     updateLocalVersion();
-    updateFinishedSuccessfully("Instalación finalizada correctamente!");
+    QTimer::singleShot(450, this, [=](){
+        updateFinishedSuccessfully("Instalación finalizada correctamente!");
+    });
 
 }
 
