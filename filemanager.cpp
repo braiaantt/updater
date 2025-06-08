@@ -170,6 +170,14 @@ bool FileManager::jsonIsValid(const QByteArray &data){
     return true;
 }
 
+bool FileManager::startApp(const QString &appPath) {
+
+    if (!QFile::exists(appPath)) return false;
+
+    return QProcess::startDetached(appPath);
+}
+
+
 //getters
 
 const QStringList&  FileManager::getErrorCopyFiles(){
