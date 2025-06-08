@@ -163,6 +163,11 @@ bool ServerManager::replyHasError(QNetworkReply *reply){
 
 void ServerManager::cancelRequests(){
 
+    if(runningRequests.isEmpty()){
+        emit readyToQuit();
+        return;
+    }
+
     for (QSet<QNetworkReply*>::const_iterator it = runningRequests.constBegin(); it != runningRequests.constEnd(); ++it) {
         QNetworkReply *reply = *it;
         if (reply && reply->isRunning())
