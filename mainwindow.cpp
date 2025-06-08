@@ -242,6 +242,7 @@ void MainWindow::showErrorMessageAndQuit(const QString &errorMessage){
 
     QPixmap pixmap(":/resources/error-svgrepo-com.svg");
     ui->labelShowResult->setPixmap(pixmap);
+    ui->labelUpdateState->setText("Error en la actualización");
     ui->stackedWidget->setCurrentIndex(1);
 
     QMessageBox::warning(this,"Error",errorMessage);
