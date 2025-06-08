@@ -28,6 +28,7 @@ public slots:
     void showErrorMessageAndQuit(const QString &errors);
     void updateLabelLogs(const QString &text);
     void timerFinished();
+    void onDescompressFinished(int exitCode);
 
 private slots:
 
