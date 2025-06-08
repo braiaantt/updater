@@ -52,6 +52,7 @@ private:
     void initUpdate();
     void downloadNewUpdate(QString&);
     void updateLocalVersion();
+    void updateFinishedSuccessfully(const QString &text);
     void initLoadingItem();
     void quitUpdater(const QString &text);
 
