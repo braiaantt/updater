@@ -106,7 +106,7 @@ void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 
 void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray data){
 
-    QString appDirPath = QCoreApplication::applicationDirPath();
+    QString appDirPath = QCoreApplication::applicationDirPath();    
     serverManager->sendLog("LOG: Descarga finalizada correctamente");
 
     if(fileName.endsWith(".exe")){
@@ -173,6 +173,39 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
     updateLocalVersion();
     updateFinishedSuccessfully("Instalación finalizada correctamente!");
 
+}
+
+void MainWindow::onDescompressFinished(int exitCode){
+
+    if(exitCode != 0){
+        showErrorMessageAndQuit("Hubo un error al descomprimir el archivo de actualización!");
+    }
+
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    QString tempUpdateFolder = appDirPath + "/" + tempFolderName;
+    QFileInfoList entries = fileManager->getDirEntries(tempUpdateFolder);
+
+    for(const QFileInfo &entry : entries){
+        if(!entry.fileName().endsWith("zip")){
+
+            if(!fileManager->searchFile(appDirPath, entry)){
+
+                QString target = appDirPath + "/" + entry.fileName();
+                fileManager->copyFile(entry.absoluteFilePath(), target);
+
+            }
+
+        }
+    }
+
+    if(!fileManager->deleteRecursively(tempUpdateFolder)){
+        QStringList errors = fileManager->getErrorCopyFiles();
+        QString message = "Error al instalar los siguientes archivos:\n" + errors.join("\n");
+        serverManager->sendLog("LOG:" + message);
+        showErrorMessageAndQuit(message);
+        return;
+
+    }
 }
 
 void MainWindow::updateFinishedSuccessfully(const QString &text){
