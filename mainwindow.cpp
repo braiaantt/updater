@@ -90,6 +90,7 @@ void MainWindow::initUpdate(){
     updateLabelLogs("Obteniendo última versión...");
 
     QTimer::singleShot(450, this, [=](){
+        if(updateCancelled) return;
         serverManager->getLatestVersion();
     });
 
@@ -97,6 +98,7 @@ void MainWindow::initUpdate(){
 
 void MainWindow::latestAppVersionRequestFinished(double latestVersion){
 
+    if(updateCancelled) return;
     ui->pushButtonCancel->setEnabled(false);
 
     if(latestVersion > mainAppInfo.getVersion()){
@@ -122,6 +124,7 @@ void MainWindow::downloadNewUpdateRequestFinished(QString fileName, QByteArray d
     updateLabelLogs("Descarga finalizada. Instalando...");
 
     QTimer::singleShot(450, this, [=](){
+
         if(fileName.endsWith(".exe")){
 
             installExe(fileName, data);
@@ -275,6 +278,7 @@ void MainWindow::initLoadingItem(){
 void MainWindow::on_pushButtonCancel_clicked()
 {
 
+    updateCancelled = true;
     ui->pushButtonCancel->setEnabled(false);
     serverManager->cancelRequests();
     ui->labelLogs->setText("Cancelando...");
