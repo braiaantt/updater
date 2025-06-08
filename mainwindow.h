@@ -44,7 +44,6 @@ private:
     QGraphicsScene *scene;
     LoadingItem *spinner;
     QTimer *rotationTimer;
-    int secsToQuit;
     bool updateCancelled;
 
     void readUpdaterConfigFile();

@@ -10,12 +10,13 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , scene(new QGraphicsScene(this)), rotationTimer(new QTimer(this)), spinner(new LoadingItem()), quitAppTimer(new QuitTimer(this))
-    , fileManager(new FileManager(this)), serverManager(new ServerManager(this)), secsToQuit(4), tempFolderName("tempUpdate")
+    , fileManager(new FileManager(this)), serverManager(new ServerManager(this)), tempFolderName("tempUpdate")
 
 {
     ui->setupUi(this);
 
     QTimer::singleShot(0, this, [this]{
+        connectSignals();
         readUpdaterConfigFile();
         initLoadingItem();
     });
@@ -44,7 +45,6 @@ void MainWindow::readUpdaterConfigFile(){
 
     initMainAppInfo(mainAppInfoObj);
     initServerManager(serverInfoObj);
-    connectSignals();
     initUpdate();
 
 }
